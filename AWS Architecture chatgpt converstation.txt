@@ -1,0 +1,445 @@
+﻿With regardings to AWS architecture. I'm considering Amplify (front end) -> ALB -> ECS Fargate (API backend). Fargate tasks will execute all API calls to achieve seamless integration with Hubspot, Shiftmarket and supporting services. What would the ideal back end architecture look like? Single container (what we normally do) - or actual microservices? What microservices would you suggest if this is optimal? Would API GW be a better choice than ALB (or do I need both)
+ChatGPT said:
+Thought for 35s
+Great question. Here’s a pragmatic, “buy once, cry once” backend shape that fits your NA‑X stack, plays nicely with Shift Markets, and keeps Trend/AFSL oversight and HubSpot sync clean.
+Recommended reference architecture
+Edge & routing
+* Amplify Hosting (front end) → CloudFront (built-in) → AWS WAF → API facade.
+
+* Make the ALB private. Put a public API Gateway in front and connect it to the private ALB via VPC Link.
+This gives you throttling, auth, headers/validation, usage plans, native WebSocket APIs, caching, and zero public exposure of your ALB.
+
+Core pattern
+   * API Gateway (REST + optional WebSocket)
+→ VPC Link
+ → Private ALB
+ → ECS Fargate services in private subnets (multi‑AZ).
+
+   * Service-to-service comms over the ALB with path-based routing (or service discovery if you prefer).
+
+   * Outbound calls (Shift GraphQL, HubSpot, fiat providers): via NAT Gateway + VPC endpoints for AWS services.
+
+   * Observability: CloudWatch + X‑Ray (enable OTel SDKs).
+
+Security & platform
+      * Cognito (end-user auth / JWTs), WAF (rate limiting + bot control), Secrets Manager, KMS, Security Hub/GuardDuty/Config/CloudTrail (org defaults you already use).
+
+      * SQS for async jobs and retries; EventBridge for timers/integration events; Step Functions for longer orchestrations (e.g., reconciliations).
+
+      * ECR for images; CodePipeline/CodeBuild for CI/CD; AppConfig for feature flags.
+
+________________
+
+
+ALB vs API Gateway (and when to use both)
+         * Just ALB (simplest): OK if the front end is the only client, traffic is modest, and you’ll enforce JWT/2FA/throttling inside the app. Pro: cheaper/simpler. Con: you hand-roll request validation, quotas, keys, canary/stage mgmt, and WebSocket backpressure.
+
+         * API Gateway only (Lambda backend): Not relevant here—you’re targeting ECS Fargate.
+
+         * API Gateway in front of a private ALB (recommended): Best for production‑grade exchange UX. You get:
+
+            * Authentication/authorization at the edge (Cognito/JWT, API keys), usage plans, throttling, WAF integration.
+
+            * Request/response mapping & schema validation, stage management, canaries, caching for read‑heavy endpoints.
+
+            * WebSocket APIs (price ticks/notifications) without exposing containers.
+
+TL;DR: You don’t need both, but API Gateway + private ALB is the clean, compliant facade for a public exchange API while keeping ECS private.
+________________
+
+
+Service granularity: single container vs microservices
+For MVP speed, a modular monolith (one service, clear internal modules, one repo) is fine—but draw the seams now so you can break out services that have different scaling/latency or risk profiles. For an exchange front end that brokers calls to Shift, plus HubSpot/fiat providers, the following small set of services is a sweet spot:
+1) BFF / API Orchestrator (Fargate)
+               * Your single public “NA‑X API” behind API Gateway.
+
+               * Validates JWTs/roles, enforces request schemas, calls internal services.
+
+               * Optionally proxies Shift Markets V4 GraphQL where the UI shouldn’t talk direct (add rate‑limit/circuit breaker/cache).
+
+               * Can fan‑out to multiple downstreams and normalize errors for the UI.
+
+2) Shift Adapter (Fargate)
+                  * Dedicated GraphQL client to Shift (queries/mutations/subscriptions), with:
+
+                     * Retries, circuit breakers, idempotency keys, and short‑TTL cache (ElastiCache for Redis / MemoryDB) for market and reference data.
+
+                        * Keeps Shift‑specific quirks out of your BFF.
+
+                        * Optionally hosts a WebSocket fan‑out for the front end if you don’t want the browser connecting to Shift directly.
+
+3) Payments & Webhooks Gateway (Fargate)
+                           * One endpoint surface (behind API Gateway) to verify provider signatures (Stripe, BCB, Banxa, etc.).
+
+                           * Transforms events to a canonical format and drops them on EventBridge/SQS.
+
+                           * Minimal logic; high reliability; easy to scale independently.
+
+4) HubSpot Sync (Fargate workers + Step Functions)
+                              * One‑way and bi‑directional sync jobs (Shift → HubSpot, ticket triggers, KYC status, contact enrichment).
+
+                              * Mix of event‑driven (webhooks/event bus) and scheduled backfills (Step Functions + SQS).
+
+                              * Strong DLQ + replay story; deduplication keys; backoff.
+
+5) Compliance & Audit Log (Fargate workers)
+                                 * Write append‑only audit records of user actions and material state changes (S3 + Glacier, DynamoDB with PITR).
+
+                                 * Emit oversight reports/feeds for Trend (batch via Step Functions; ad‑hoc via Athena/Glue).
+
+                                 * Keep crypto/PII minimal—store only what you must; reference Shift IDs where possible.
+
+6) Notifications (optional early split)
+                                    * E‑mail/SMS/in‑app via SES/SNS or third‑party; template mgmt, user prefs, rate limits.
+
+Everything else (auth/session, config, simple reference data) can live in the BFF initially. Extract when scaling/ownership boundaries demand it.
+________________
+
+
+Data & caching
+                                       * State: Prefer stateless services. Persist only NA‑X specific state (e.g., ID mappings, webhook receipts, sync checkpoints) in DynamoDB.
+
+                                       * Caching: Short‑TTL cache for market data & reference lists to reduce Shift calls.
+
+                                       * Logs: Structured JSON to CloudWatch; ship to S3 for retention & Athena queries.
+
+________________
+
+
+Networking & infra
+                                          * Custom VPC, private subnets for ECS, public subnets only for API Gateway endpoints (managed), NAT for egress.
+
+                                          * Private ALB. Security groups: API GW VPC Link → ALB target group; per‑service SGs; no public SGs on tasks.
+
+                                          * VPC endpoints: S3, SSM, Logs, Secrets Manager, ECR, STS.
+
+                                          * Multi‑AZ tasks & ALB target groups; graceful draining for deploys.
+
+________________
+
+
+Deployment, scaling, and SLOs
+                                             * Blue/green (CodeDeploy) or rolling with min capacity; health checks at ALB + synthetic canaries (CloudWatch Synthetics).
+
+                                             * Auto scaling on CPU, memory, and custom metrics (e.g., Shift API latency, SQS depth).
+
+                                             * SLO examples: p95 API latency per route, webhook age-to-ingest, sync lag to HubSpot, error budgets.
+
+________________
+
+
+When to let the front end talk directly to Shift
+                                                * Read‑only, high‑fanout, real‑time (price ticks, order books) if CORS and auth allow: connect browser → Shift WebSocket.
+
+                                                * For actions (orders, withdrawals) or when you need AFSL/Trend checks, go via your BFF so you can enforce policy, log, and rate‑limit.
+
+________________
+
+
+Quick decision flow
+                                                   * Need quotas/keys/throttling/auth at the edge, private ECS, and clean multi‑client API? → API Gateway + private ALB + ECS.
+
+                                                   * Racing to MVP with only your UI, low scale, and minimal edge concerns? → Amplify → WAF → public ALB → ECS (plan to move to API GW).
+
+                                                   * Service shape: Start modular monolith BFF + 3 small satellites (Shift Adapter, Webhooks Gateway, HubSpot Sync). Split further only when scale/teams demand it.
+
+If you want, I can sketch a Terraform‑ish module layout and a sample API GW + VPC Link + private ALB config next.
+You said:
+If racing to MVP - would we use a monolith container in ECS or split services up ?
+ChatGPT said:
+Thought for 16s
+Short answer: for MVP, run a modular monolith on ECS Fargate — with one containerized app that’s cleanly split into internal modules — and pull out only the truly “spiky” or “risky” bits as tiny sidecars when needed.
+Here’s the shape that strikes the best speed/complexity balance:
+MVP day‑1
+                                                      * One Fargate service (“BFF / API”)
+ Modules inside the codebase:
+
+                                                         * Shift adapter (GraphQL client, retries/circuit breakers, short‑TTL cache)
+
+                                                         * Fiat ramps module (initiate flows, verify webhook signatures, update balances via Shift)
+
+                                                         * HubSpot sync module (push contact/KYC/status)
+
+                                                         * Compliance/audit logger (append‑only events, S3/Dynamo)
+
+                                                            * Edge: Ideally API Gateway → VPC Link → private ALB → Fargate for auth/throttling/caching and to keep ECS private. If you must go fastest possible, public ALB + WAF is acceptable and swappable later.
+
+                                                            * Queues/events: SQS for retries; EventBridge for timers (reconciliations, backfills).
+
+                                                            * State: DynamoDB for NA‑X state (id‑maps, webhook receipts, sync checkpoints).
+
+                                                            * Observability: CloudWatch/X‑Ray + structured JSON logs.
+
+Why this works for you: your backend mostly orchestrates Shift/Fireblocks/fiat/HubSpot rather than doing heavy domain logic, so the failure/scaling profile is uniform. A single service means less infra to wire, fewer IAM/SecGroup edges, and faster iteration.
+When to split (use these trip‑wires)
+Break a module into its own microservice only if one of these becomes true:
+                                                               * Different scaling curve: e.g., webhook bursts or market‑data fan‑out needs 2–3× the BFF capacity.
+
+                                                               * Latency isolation: upstream flakiness (fiat/HubSpot) is hurting trading UX; you want bulkheads.
+
+                                                               * Availability blast radius: a noisy dependency threatens core trading flows.
+
+                                                               * Ownership: a separate team needs independent deploy cadence.
+
+                                                               * Runtime needs: long‑running jobs/flows better suited to workers/Step Functions.
+
+First two candidates to split (if/when the trip‑wires trigger)
+                                                                  1. Webhooks Gateway (payments + Shift): very small Fargate service behind API GW that only verifies signatures, normalizes payloads, and drops events onto SQS/EventBridge. Keeps the BFF hot path clean.
+
+                                                                  2. HubSpot Sync Worker: a worker service consuming from SQS with backoff/DLQ, decoupled from user‑facing latency.
+
+(Everything else — Shift adapter, audit logging, notifications — stays in‑process until scale or risk says otherwise.)
+ALB vs API Gateway (fast reality check)
+                                                                     * Fastest path: ALB (+ WAF) directly to the monolith. Fewest moving parts.
+
+                                                                     * Production‑grade from day 1: API Gateway in front of a private ALB buys you JWT/Cognito integration, usage plans/throttling, request validation, caching, canaries, and no public ECS. If you can spare the setup time, pick this now to avoid an edge migration later.
+
+Code & repo tips (to keep “modular” honest)
+                                                                        * One repo, one service, clear module boundaries (e.g., /shift, /fiat, /hubspot, /audit) with interfaces; block cross‑module imports except via those interfaces.
+
+                                                                        * Put HTTP clients behind adapters (easy to extract).
+
+                                                                        * All external calls idempotent, wrapped with circuit breakers and timeout budgets.
+
+                                                                        * Emit domain events for meaningful changes (user verified, deposit confirmed, withdrawal requested) to SQS/EventBridge even if only the monolith consumes them at first — future services can subscribe without changing the BFF.
+
+Infra knobs for MVP
+                                                                           * Fargate service (min 2 tasks, multi‑AZ), autoscale on CPU/mem + SQS depth.
+
+                                                                           * Secrets Manager + IAM task roles; VPC endpoints for AWS services; NAT for egress to vendors.
+
+                                                                           * Blue/green deploys; health checks at ALB; synthetic canaries for critical flows.
+
+Bottom line: Start with one ECS service (modular monolith) and keep seams crisp so you can peel off a Webhooks Gateway and a HubSpot worker if/when the metrics demand it. This gets you to AU MVP fastest without painting you into a corner.
+You said:
+So we are racing to MVP. I want to create a design proposal which is clean and shows the proposed MVP architecture and workflow. It should also include a proposed roadmap with reasons and in-depth info such as you've provided above
+ChatGPT said:
+Thought for a second
+Thought for 11s
+Na‑x Mvp Backend Design Proposal (amplify → Api Gateway → Private Alb → Ecs Fargate)
+I’ve drafted a clean, printable proposal with architecture, workflows, rationale, and a 12‑month roadmap on the canvas. Have a look — happy to tweak anything (language, scope, or diagram detail) to fit your client pack.
+Would you like me to add a Terraform module outline and a sequence diagram per workflow next?
+You said:
+So you would still recommend API GW and private ALB as part of the MVP?
+ChatGPT said:
+Yes — given NA-X’s MVP goals and the compliance/security posture from the AWS Account ReviewNA-X AWS Account Review and Integration StrategyNA-X Australian Web App…, I’d still recommend API Gateway + private ALB as part of the MVP.
+Here’s why:
+________________
+
+
+1. API Gateway in front
+                                                                              * Benefits for MVP
+
+                                                                                 * Native request/response transformation (can adapt Hubspot/Shift payloads without code changes).
+
+                                                                                 * Easy authentication & throttling — protects the backend from overuse and abuse, especially when integrating with rate-limited services like Shift Markets.
+
+                                                                                 * Managed WebSocket support for live trading updates if required later.
+
+                                                                                 * Built-in metrics and logging to meet Trend Capital Group’s oversight needs.
+
+                                                                                    * MVP scope fit: You can keep the API Gateway routing simple (one “catch-all” route to the backend) and add granular micro-routes post-MVP.
+
+________________
+
+
+2. Private ALB inside VPC
+                                                                                       * Why it’s still worth it early
+
+                                                                                          * ALB lets you terminate TLS in-VPC and keep Fargate tasks on private subnets (meets the network isolation gaps from the AWS review).
+
+                                                                                          * Supports container-level path routing if you later split monolith into microservices.
+
+                                                                                          * Direct WAF integration for an extra layer of request inspection before traffic hits ECS.
+
+                                                                                             * MVP scope fit: Minimal listener rules now, scale later.
+
+________________
+
+
+3. Recommended MVP path
+                                                                                                * Start with a monolith container in ECS Fargate for all backend logic (Hubspot, Shift Markets, Fiat ramps, etc.).
+
+                                                                                                * API Gateway → VPC Link → private ALB → ECS service.
+This is production-ready from day one but doesn’t force microservice complexity.
+
+                                                                                                * Post-MVP, split services along integration boundaries (e.g., Hubspot sync service, Fiat payment service, Shift integration service).
+
+________________
+
+
+4. Why not ALB-only?
+                                                                                                   * ALB can handle the traffic, but you’d lose:
+
+                                                                                                      * Native API management features (throttling, usage plans, API keys).
+
+                                                                                                      * Request/response mapping without code changes.
+
+                                                                                                      * WebSocket API options.
+
+                                                                                                      * Cleaner service-to-service security boundary (public API surface at API Gateway, private services behind VPC link).
+
+________________
+
+
+If you want, I can now add a visual MVP architecture diagram and phased roadmap showing exactly where API Gateway and ALB sit, and how to evolve to microservices over the first 12 months. That would make the proposal client-ready.
+You said:
+Document in the proposed architecture brief descriptions of why these components are included. Also I had originally been thinking of Aurora for the back end DB, you mentioned Dynamo
+ChatGPT said:
+Thought for 13s
+Failed to edit
+Thought for 8s
+Failed to edit
+Thought for 8s
+I tried to update the proposal on the canvas with (1) short “why this exists” blurbs for each component and (2) an Aurora vs DynamoDB decision note, but the edit failed due to a heading pattern mismatch in the doc. I’ll drop the exact content here so you have it right away—if you want, I can re‑insert it into the canvas in your preferred spot.
+Component rationale (brief)
+                                                                                                         * Amplify Hosting + CloudFront – Fast global delivery and CI/CD for the UI; static assets off the app tier for performance and cost.
+
+                                                                                                         * AWS WAF – Edge protection (rate‑limit, bot control, IP reputation, managed rules) before requests touch your API.
+
+                                                                                                         * API Gateway (REST / WebSocket) – Public API façade with JWT/Cognito auth, usage plans, throttling, request/response mapping, validation, caching, stages/canaries. Keeps backend private.
+
+                                                                                                         * VPC Link – Managed private bridge from API Gateway to the VPC so you don’t expose ALB/services publicly.
+
+                                                                                                         * Private ALB – In‑VPC TLS termination, health checks, and path‑based routing; future‑proofs a move from monolith to multiple services.
+
+                                                                                                         * ECS Fargate (BFF modular monolith) – Serverless containers, no node ops; fastest MVP while preserving seams to split later.
+
+                                                                                                         * SQS – Backpressure, retries, DLQs for webhooks and async jobs; decouples from user‑facing latency.
+
+                                                                                                         * EventBridge – Timers/schedules and event fan‑out for orchestrations and integrations.
+
+                                                                                                         * ElastiCache/MemoryDB (optional) – Short‑TTL cache for market/reference data to reduce Shift API pressure and improve p95 latency.
+
+                                                                                                         * DynamoDB – Serverless operational state (ID maps, webhook receipts, sync checkpoints) with conditional writes, on‑demand scaling, and PITR.
+
+                                                                                                         * S3 (+ Glacier) – Immutable audit/event store with lifecycle and Object Lock (if required); queryable via Athena.
+
+                                                                                                         * CloudWatch + X‑Ray/OTel – Metrics, logs, traces, alarms, synthetics for SLOs and incident response.
+
+                                                                                                         * Secrets Manager + KMS – Centralised secrets with rotation and envelope encryption; enforced via least‑privilege IAM roles.
+
+Aurora vs DynamoDB (for MVP)
+Context. Trading, balances and core exchange logic live in Shift. What we store is mostly integration state (ID mappings, webhook receipts, sync cursors) and append‑only audit events.
+MVP recommendation — DynamoDB (+ S3 for audit):
+                                                                                                            * Ops & cost: No servers or patching; scales with traffic; great at low/variable RPS.
+
+                                                                                                            * Access patterns: Key‑value/time‑series shapes fit Dynamo naturally; conditional writes for idempotency; PITR for recovery.
+
+                                                                                                            * Elasticity: Handles webhook bursts with on‑demand capacity + SQS buffering; avoids RDS connection pool limits in containers.
+
+When to introduce Aurora PostgreSQL:
+                                                                                                               * You start owning relational domain data beyond Shift (multiple related entities, cross‑entity transactions).
+
+                                                                                                               * You need rich SQL joins, secondary indexes and ad‑hoc analytics over your application‑owned data.
+
+                                                                                                               * You want off‑the‑shelf BI/reporting tools against a relational source without building ETL to Athena.
+
+Hybrid later: Keep operational state in DynamoDB; stream changes (DynamoDB Streams → Lambda/Firehose) into Aurora (or Athena/Glue via S3) for relational/read‑model needs. This preserves scale/cost while unlocking SQL where it’s useful.
+Bottom line: For MVP speed, reliability and cost, pick DynamoDB + S3. Add Aurora once you genuinely own relational data that justifies it.
+________________
+
+
+If you tell me where you’d like these sections (e.g., after the architecture diagram and after Runtime Components), I’ll re‑apply the update to the canvas.
+You said:
+Update the proposed architecture section with required changes. Add a section called design decisions, which explains rationale behind current architecture
+ChatGPT said:
+Thought for 23s
+Failed to editFailed to editFailed to edit
+Answer in chat instead
+Thought for 21s
+Na‑x Mvp Backend Design Proposal (amplify → Api Gateway → Private Alb → Ecs Fargate)
+NA‑X MVP Backend Design Proposal
+Author: Infostatus
+Date: 13 August 2025 (AEST)
+________________
+
+
+1. Purpose & Scope
+Propose the Minimum Viable Product (MVP) backend architecture and workflow for NA‑X exchange front end (Amplify) integrating with Shift Markets, HubSpot, and supporting services. Includes a pragmatic 12‑month roadmap to evolve from a modular monolith into microservices.
+________________
+
+
+2. Design Goals
+                                                                                                                  * Ship fast with safety: Production‑ready edge controls, minimal moving parts.
+                                                                                                                  * Private ECS: Keep backend services in private subnets.
+                                                                                                                  * Seams for growth: Modular design to allow later extraction of services.
+                                                                                                                  * Compliance-ready: Audit trails, PII minimisation, infrastructure as code.
+________________
+
+
+3. Proposed MVP Architecture & Component Rationale
+Amplify (Front End Hosting) – Static hosting and CI/CD for web UI, globally cached via CloudFront, enabling rapid iteration.
+WAF (Web Application Firewall) – Protects from common exploits, bots, and targeted attacks; provides an additional compliance safeguard.
+API Gateway – Public API ingress with built-in authentication (Cognito/JWT), throttling, request validation, caching, and WebSocket support for real-time features.
+VPC Link – Securely connects API Gateway to a private ALB, ensuring ECS remains inaccessible from the public internet.
+Private ALB (Application Load Balancer) – Handles routing to ECS tasks, terminates TLS inside the VPC, and supports path‑based routing for future microservice split.
+ECS Fargate – BFF (Modular Monolith) – Single container app housing multiple internal modules for speed to market:
+                                                                                                                  * Shift Adapter – Interface for market/trade API calls to Shift Markets.
+                                                                                                                  * Payments/Webhooks Module – Validates and processes payment and external service events.
+                                                                                                                  * HubSpot Sync Module – Maintains CRM data alignment.
+                                                                                                                  * Audit Logger – Captures immutable event logs for compliance.
+Database Layer –
+                                                                                                                  * Aurora Serverless: Chosen for MVP if strong relational integrity and transactional capabilities are required.
+                                                                                                                  * DynamoDB: Considered if workloads are primarily high‑throughput key‑value with minimal relational complexity.
+S3 (Audit & File Storage) – Long-term, immutable storage for audit records and files, with lifecycle rules.
+SQS & EventBridge – Asynchronous event handling, retries, and decoupled workflows.
+ElastiCache (Optional) – Low-latency caching for market data and frequently accessed queries.
+CloudWatch/X-Ray – Centralised logging, metrics, and distributed tracing.
+________________
+
+
+4. Design Decisions
+                                                                                                                  * API Gateway + Private ALB – Combines robust API management and private service isolation, giving flexibility for future external APIs without sacrificing security.
+                                                                                                                  * Modular Monolith for MVP – Minimises deployment complexity while allowing clean module boundaries to split into microservices later.
+                                                                                                                  * Aurora over DynamoDB (Initial) – Based on expected transactional needs for compliance and financial operations; DynamoDB remains a future scaling option.
+                                                                                                                  * Event-Driven Processing – SQS and EventBridge provide reliable async processing without tying modules directly together.
+                                                                                                                  * Immutable Audit Storage – Compliance priority to meet Trend Capital oversight and regulatory record-keeping.
+                                                                                                                  * Caching Layer Optionality – Only implemented if real-time performance requires it, to reduce initial cost.
+________________
+
+
+5. Roadmap (Summary)
+                                                                                                                  * Phase 0: Provision VPC, ALB, API Gateway, ECS, DB, observability stack.
+                                                                                                                  * Phase 1: Build BFF modules; integrate Shift, HubSpot, and payments.
+                                                                                                                  * Phase 2: Security hardening; load/performance testing.
+                                                                                                                  * Phase 3: Extract dedicated services (e.g., webhook processor, HubSpot sync) if load or complexity grows.
+                                                                                                                  * Phase 4–5: Compliance automation, enhanced monitoring, possible move to domain-based microservices.
+________________
+
+
+6. Acceptance Criteria (MVP)
+                                                                                                                  * All ingress routed via API Gateway; ECS remains private; WAF enabled.
+                                                                                                                  * Database choice confirmed against detailed requirements.
+                                                                                                                  * Complete, queryable audit logs stored securely.
+                                                                                                                  * Blue/green deployment process in place for zero-downtime updates.
+Failed to edit
+Answer in chat instead
+Thought for 4 seconds
+I tried to update the canvas doc’s “Proposed MVP Architecture & Component Rationale” section and add a new “Design Decisions & Rationale” section, but the automated edit failed to match the exact database bullet (looks like a unicode dash/spacing mismatch). I didn’t retry further to avoid clobbering your changes.
+Here are the exact updates I prepared—paste-ready:
+Replace the “Database Layer …” bullet with:
+Database Layer (MVP: DynamoDB; Future: Aurora PostgreSQL) – For MVP, use DynamoDB for operational state (ID maps, webhook receipts, sync cursors) due to low ops overhead, on‑demand scaling, and straightforward idempotency with conditional writes. Store immutable audit events in S3. Introduce Aurora PostgreSQL later only if we start owning relational domain data that requires multi‑row transactions/joins or rich SQL analytics. Provide a migration path via DynamoDB Streams → ETL to Aurora.
+Add this new section at the end of the document:
+________________
+
+
+7. Design Decisions & Rationale
+API Gateway + Private ALB
+ Expose a managed API facade (auth, throttling, validation, usage plans, WebSocket) while keeping containers private. VPC Link bridges API Gateway to a private ALB, which future‑proofs path‑based routing if we split services later and avoids any public security groups on ECS.
+MVP Service Shape: Modular Monolith
+ One Fargate service (BFF) ships fastest and keeps blast radius small. Clear internal module boundaries (Shift adapter, webhooks, HubSpot sync, audit) let us peel out workers (e.g., Webhook Gateway, HubSpot Worker) when scaling or reliability signals demand it.
+Data Stores: DynamoDB + S3 first
+ Most authoritative exchange data lives in Shift. Our data is integration state and audit trails. DynamoDB handles spiky webhook/worker patterns and idempotency with minimal ops; S3 provides immutable, queryable (Athena) audit history. Aurora is deferred until we truly need relational semantics.
+Asynchrony by Default
+ External integrations (payments, HubSpot) are bursty/flaky. We front them with SQS (backpressure, DLQs) and EventBridge (timers/fan‑out) to protect user‑facing latency and enable safe retries/replays.
+Caching Strategy
+ Where Shift latency dominates read paths (markets/instruments), add ElastiCache/MemoryDB with short TTLs to reduce upstream pressure and improve p95 latency. Cache is optional for MVP; enable once real metrics justify it.
+Security Posture
+ WAF at the edge, JWT/Cognito at API Gateway, zero public ECS, least‑privilege IAM with Secrets Manager for credentials, and KMS for encryption. This addresses isolation/governance gaps and aligns with AFSL oversight expectations.
+Observability & SLOs
+ Structured logs, metrics, traces (X‑Ray/OTel), and synthetics provide actionable dashboards and alerting. Autoscaling uses CPU/mem plus SQS depth and custom latency metrics.
+Deployment & Environments
+ Three accounts (Dev/Pre‑Prod/Prod), Terraform IaC, Blue/Green deploys on ECS, health‑based drain, and feature flagging via AppConfig. This lowers release risk while preserving MVP velocity.
+Real‑time Updates
+ If we need price ticks or order‑book streams, use API Gateway WebSocket (or browser → Shift WS directly if policy permits). Writes/actions continue through the BFF for policy enforcement and auditing.

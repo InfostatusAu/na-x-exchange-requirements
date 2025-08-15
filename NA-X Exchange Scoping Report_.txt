@@ -1,0 +1,295 @@
+﻿Scoping Document: NA-X Exchange Expansion - Australia (Shift Markets)
+I. Introduction
+1.1 Purpose and Scope
+This document outlines the scope and requirements for NA-X's planned expansion initiatives: launching a cryptocurrency exchange targeting the Australian market utilizing the Shift Markets white-label platform, and executing a market entry strategy for the United States leveraging Coinme's Crypto-as-a-Service (CaaS) platform. The scope encompasses detailing NA-X's current operational state, defining the functional and technical requirements for both the Australian and US platforms, outlining compliance obligations in each jurisdiction (noting NA-X operates as a Corporate Authorised Representative in Australia), specifying integration needs with third-party services including liquidity providers, payment gateways, and the Hubspot CRM, and developing a consolidated strategic approach for managing these dual operations.
+1.2 Methodology
+The requirements and analysis presented herein are derived from user queries and provided context, supplemented by extensive research into the capabilities of Shift Markets and Coinme platforms, Australian and US regulatory landscapes for digital assets (including the specific framework for Corporate Authorised Representatives in Australia), and best practices for cryptocurrency exchange operations and technology integration. Analysis of publicly available documentation, regulatory guidance (ASIC, AUSTRAC, FinCEN), technical specifications, and industry reports forms the basis of this assessment.79
+1.3 NA-X Overview
+NA-X currently operates as a personalized Over-the-Counter (OTC) cryptocurrency brokerage. Its primary focus is facilitating larger crypto transactions for clients, offering a high-touch service model distinct from typical retail exchanges.1 In Australia, NA-X operates as a Corporate Authorised Representative (CAR) under the Australian Financial Services Licence (AFSL) held by Trend Capital Group. The planned expansion into a full Australian exchange (via Shift Markets) and the US market (via Coinme) represents a strategic shift towards offering broader exchange functionalities to a larger customer base in regulated markets, leveraging different operational and compliance models in each jurisdiction.
+II. NA-X Current State Analysis
+2.1 Personalized OTC Crypto Brokerage Operations
+NA-X's existing business model centers on OTC trading, providing execution and settlement services for large-volume cryptocurrency orders.3 This typically involves personalized service, potentially through dedicated brokers or account managers, offering clients discretion and competitive pricing while minimizing market impact (slippage) associated with placing large orders on public exchange order books.3 Key workflows likely include client onboarding, quote generation, trade execution confirmation, and settlement facilitation. These services are provided under the authorisation of Trend Capital Group's AFSL.
+2.2 Customer Management (Airtable transitioning to Hubspot)
+Customer relationship management is currently handled using Airtable. NA-X is in the process of transitioning to Hubspot CRM. This transition aims to leverage Hubspot's more robust feature set for managing customer interactions, tracking onboarding progress, facilitating marketing efforts, and potentially integrating support functions across future Australian and US operations. The successful integration of Hubspot with both the Shift Markets and Coinme platforms will be critical for achieving a unified customer view.11
+2.3 Existing Compliance Measures (Australia - as CAR of Trend Capital Group)
+As an entity dealing with cryptocurrencies in Australia and operating as a CAR of Trend Capital Group (AFSL holder), NA-X's current OTC operations fall under specific regulatory requirements, primarily overseen by Trend Capital Group. Key existing measures should include:
+* Authorisation: Operating strictly within the financial services authorised by Trend Capital Group under its AFSL.80
+* AUSTRAC Compliance: Supporting Trend Capital Group in meeting its obligations as a likely registered Digital Currency Exchange (DCE) provider with AUSTRAC. This involves NA-X implementing procedures for Customer Due Diligence (CDD/KYC), transaction monitoring, and providing necessary information to Trend for mandatory reporting (SMRs, potentially TTRs/IFTIs).89 The AML/CTF program followed is Trend Capital Group's.80
+* ASIC Compliance: Adhering to the Corporations Act and ASIC regulations as applicable to CARs, including disclosure requirements (e.g., providing Trend's Financial Services Guide (FSG) to retail clients) and acting in the best interests of clients.80
+* Record Keeping: Maintaining records as required by Trend Capital Group and ASIC regulations (e.g., advice records, client information) and providing access to Trend Capital Group upon request.80
+* Training and Competence: Ensuring NA-X representatives meet the training and competence standards set by Trend Capital Group.80
+* Supervision: Operating under the supervision and monitoring framework established by Trend Capital Group.81
+The transition to a full retail exchange model using Shift Markets will require a reassessment of Trend Capital Group's AFSL authorisations and potentially necessitate variations, as well as scaling the compliance and supervision framework managed by Trend.
+2.4 Transaction Processes
+Current transaction processes involve matching OTC client orders, facilitating settlement (crypto-to-crypto or crypto-to-fiat), and recording these transactions, all under the authorisation of Trend Capital Group. Custody arrangements and operational funds management are key components. The transition to exchange platforms will require significantly more automated, high-throughput transaction processing capabilities managed by the respective white-label providers (Shift Markets in AU, Coinme in US).
+III. Australian Market Strategy (Shift Markets - Operating as CAR of Trend Capital Group)
+3.1 Shift Markets White-Label Platform: Features, Capabilities, Limitations
+Shift Markets offers a white-label cryptocurrency exchange platform designed for rapid deployment.17 Key features relevant to NA-X (operating as a CAR) include:
+* Technology & Trading: High-performance matching engine for spot and derivatives, scalable architecture, various order types.17
+* Liquidity: Aggregated liquidity from major providers, market-making tools, flexibility in connecting LPs.17
+* Customization & API: Extensive UI/UX customization via API-driven platform.20
+* Back-Office Control: Comprehensive controls for user management, trading parameters, fees, liquidity, compliance oversight, reporting, and audit trails.20 Crucially, these controls must be sufficient to allow Trend Capital Group (Licensee) to effectively monitor and supervise NA-X's (CAR) activities.
+* Security: SOC2 compliant, encryption, MFA, partnership with Cobo (though NA-X uses Fireblocks).17
+* Compliance Integration: Integrated KYC/AML workflows (Sumsub partner 31), connections to KYT providers (Elliptic, Chainalysis, TRM) via Integrations Hub.26 The platform must facilitate NA-X operating under Trend's compliance framework and Trend's oversight.
+* Integrations Hub: Connects to KYC/KYT, custody (Fireblocks listed), liquidity (Coinbase, Binance, KuCoin, B2C2, etc. listed), market makers.
+Limitations relevant to CAR structure: Documentation lacks specifics on features explicitly designed for licensee oversight of authorised representatives.29 Confirmation needed on how the platform facilitates Trend's specific monitoring, supervision, and reporting requirements under its AFSL and AUSTRAC registration.29 Direct integration capabilities with specified Australian payment providers (Stripe, BCB, Alex Bank, Banxa) need verification.29
+3.2 Scope Definition for Australian Exchange (under Trend Capital Group AFSL)
+* Functionalities:
+   * Trading: Spot trading for selected cryptocurrency pairs against AUD and potentially other major cryptocurrencies. Crypto swaps. All services must be within the scope authorised by Trend Capital Group.80
+   * User Management: Secure registration, KYC/AML verification (meeting Trend's standards, potentially using Shift/Sumsub 31), account management, 2FA.17
+   * Wallet: Integrated custodial wallets (via Fireblocks integration), functionality for deposits/withdrawals.
+   * Reporting: User statements, transaction history. Back-office reporting sufficient for NA-X operations and Trend's oversight and compliance reporting obligations.22
+* Initial Token List Validation (under Trend Capital Group AFSL):
+   * Proposed Tokens: Validate the extensive list provided previously against Shift Markets' technical support 20 and available liquidity.21
+   * AFSL Authorisation Assessment: Critically, Trend Capital Group must assess whether each proposed token constitutes a 'financial product' under the Corporations Act.33 Trend must then confirm if offering trading in these specific tokens falls within the existing authorisations of its AFSL. If not, Trend Capital Group must apply to ASIC for an AFSL variation before NA-X can offer those tokens.81 This assessment is Trend's responsibility as the licensee.80 Certain token types (e.g., privacy coins, some meme coins, potentially tokens linked to yield/staking) may pose higher regulatory risk or be outside standard authorisations.
+   * Listing Flexibility: Confirm Shift Markets' process and capability for adding new tokens, subject to Trend Capital Group's assessment and authorisation process.
+3.3 Australian Fiat (AUD) and Crypto On/Off-Ramping (Leveraging Trend Relationships)
+* Fiat On/Off-Ramps (AUD):
+   * NPP/PayID: Integrate with Australian NPP providers for real-time AUD transfers.38
+   * Payment Gateway Integration: Confirm integration feasibility (via Shift Hub or direct) for providers where accounts are established by Trend ATF Peer TC:
+      * Stripe: Existing Trend relationship.41
+      * BCB Group: Existing Trend relationship; offers NPP.39
+      * Alex Bank: Requires API assessment; account opened by Trend.40
+      * Banxa: Onboarding via Trend.45
+   * BPAY/EFT: Consider as secondary options.48
+* Crypto On/Off-Ramps: Standard crypto deposits/withdrawals managed via Shift platform integrated with Fireblocks custody.49
+3.4 Liquidity Provider Integration (Leveraging Trend Relationships)
+* Shift's Aggregated Liquidity: Utilize Shift's aggregated feeds.18
+* Direct Integration Requirements: Confirm technical integration (via Shift) for LPs where accounts are opened by Trend ATF Peer TC:
+   * Coinbase, Kraken, Binance, KuCoin, Nexus, B2C2, Crypto.com.20
+   * NEO-X (Requires API assessment).52
+* API Standards: Ensure Shift supports required LP API protocols (REST, WebSocket, FIX).50
+3.5 Australian Compliance Procedures (NA-X as CAR under Trend Capital Group)
+* AFSL Compliance (Trend Capital Group Responsibility, NA-X Execution):
+   * Authorisation Scope: NA-X must operate strictly within the financial services authorised by Trend Capital Group.80 Trend is responsible for ensuring its AFSL covers all services offered by NA-X, including applying for variations if needed.81
+   * Trend's General Obligations: Trend Capital Group holds the primary responsibility for meeting AFSL general obligations (s912A Corporations Act), including ensuring services are provided efficiently, honestly, and fairly; managing conflicts of interest; having adequate resources (financial, technological, human); ensuring competence of responsible managers and representatives (NA-X); having adequate risk management systems; and maintaining dispute resolution/compensation arrangements.81
+   * NA-X Obligations as CAR: NA-X must comply with Trend's policies and directions, adhere to financial services laws, maintain competence, provide required disclosures (e.g., Trend's FSG), manage conflicts locally as per Trend's framework, and maintain records accessible to Trend.80
+   * Supervision & Monitoring: Trend must implement and maintain adequate systems to monitor and supervise NA-X's activities, including conducting due diligence, reviewing compliance, and addressing issues.81 The Shift platform's back-office tools must support this oversight.29
+   * Training: Trend is responsible for ensuring NA-X representatives are adequately trained and competent.81 NA-X must facilitate and participate in required training.
+* AUSTRAC Compliance (Trend Responsibility, NA-X Support):
+   * Registration: Trend Capital Group is likely the entity registered with AUSTRAC as the DCE provider offering services via NA-X.
+   * AML/CTF Program: NA-X must implement and adhere to Trend Capital Group's AML/CTF program.80 Trend is responsible for the program's development, maintenance, and independent review.85
+   * KYC/CDD: NA-X performs operational KYC/CDD procedures according to Trend's program standards, potentially using Shift/Sumsub tools.31 Trend oversees the process.
+   * Transaction Monitoring: NA-X conducts monitoring using platform tools, escalating suspicious activity to Trend according to agreed procedures.
+   * Reporting (SMR, TTR, IFTI, Compliance Reports): Trend Capital Group is responsible for submitting mandatory reports to AUSTRAC.89 NA-X must provide Trend with all necessary information in a timely manner to facilitate this reporting.
+   * Record Keeping: NA-X must maintain records required by Trend and legislation, ensuring Trend has access for compliance and audit purposes for 7 years.85
+3.6 Treasury Management Strategy (Australia - Fireblocks)
+* Custody Solution: Utilize Fireblocks, integrated with Shift Markets.
+* Wallet Structure: Implement hot/cold strategy within Fireblocks.59
+* Integration: Ensure seamless API integration between Shift and Fireblocks.
+* Fiat Management: Manage AUD flows via Trend-established bank accounts and payment providers.
+* Reconciliation: Implement rigorous reconciliation processes matching Shift, Fireblocks, and bank data.64 Utilize appropriate software.64
+* Risk Management & Governance: Define policies within Fireblocks, manage operational liquidity, potentially using stablecoins.61 Governance framework must align with Trend's requirements.
+* Audits: Facilitate regular audits required by Trend Capital Group.68
+IV. US Market Entry Strategy (Coinme)
+4.1 Coinme White-Label Solutions & Banking Services
+Coinme offers a "Crypto-as-a-Service" (CaaS) platform enabling partners to embed crypto functionalities via APIs/SDKs.69
+* White-Label Capabilities: Turnkey APIs allow NA-X to customize the front-end user experience under its brand.69
+* Core Functionality: KYC, Buy/Sell/Custody (Coinme is custodian and counterparty), Send/Receive crypto.69 Focuses on core assets like BTC, ETH, LTC, DOGE, LINK, MATIC, XLM, USDC.73 Limited advanced trading features compared to Shift.69
+* "Banking Services": Crypto payments, crypto rewards APIs.69 Strong focus on cash network integration (Coinstar, MoneyGram) and USDC on Stellar for payments/remittances.
+* API/SDK Focus: Primarily API/SDK based integration.
+4.2 Coinme as Sole Provider for US Fiat (USD) and Crypto On/Off-Ramping
+Relying solely on Coinme for US on/off-ramps involves:
+* Supported Methods:
+   * Cash On-Ramp: Coinstar kiosks, MoneyGram locations. Limits apply (e.g., Coinstar up to $2,900/day historically, potentially $9,500 now). Fees apply.
+   * Cash Off-Ramp: Via ReadyCode ATMs (22,000+ locations). Limits apply (e.g., $400/transaction, $2,000/day) and fees ($2.50 + exchange fee).
+   * Debit Card On/Off-Ramp: Direct buy/sell in app.72
+* Potential Gaps (ACH/Wire): No confirmation that Coinme's CaaS API supports ACH/Wire transfers for partner end-users.69 This reliance primarily on cash/debit could be a significant limitation.70 Verification is critical.
+* Crypto On/Off-Ramp: Standard deposits/withdrawals via Coinme's custodial wallet.
+4.3 US Compliance Requirements & Coinme's Role
+Coinme's CaaS platform aims to provide comprehensive US regulatory coverage for partners.99
+* FinCEN MSB Registration: Coinme is registered (NMLS# 1185542).99 NA-X operates under Coinme's registration.69
+* State Money Transmitter Licenses (MTLs): Coinme holds licenses covering most states (claims 48 states & PR, list shows 36+).78 NA-X leverages Coinme's licenses, avoiding direct state-by-state licensing.
+* KYC/AML Program: Coinme provides KYC via API and manages the AML/CFT program (BSA, OFAC compliant) for users transacting via its platform. Coinme handles SARs.
+* SEC/CFTC Considerations: Coinme focuses on assets less likely to be deemed securities.72 NA-X relies on Coinme's asset vetting. Past SEC settlement noted.76
+Table IV.A: US Compliance Requirements & Coinme Coverage (Summary - Unchanged)
+(Same table as previous version, highlighting Coinme's role in covering FinCEN MSB, State MTLs, and KYC/AML program execution for NA-X's US operations)
+This model significantly simplifies US compliance for NA-X but creates dependency on Coinme's continued compliance and licensing.
+4.4 Treasury Management Strategy (Leveraging Coinme Infrastructure)
+* Asset Custody: Coinme provides custodial wallets for end-users.72 NA-X needs clarity on segregation and security of any operational funds held with Coinme.
+* Operational Funding: Define process for NA-X to fund its operational account with Coinme (Wire, ACH?).
+* Reconciliation: Establish procedures to reconcile NA-X records, Hubspot data, and Coinme transaction data (via API).64
+* Security: Rely on Coinme's security infrastructure. Due diligence required on their protocols, audits, insurance.72 Significant counterparty risk concentration.
+V. Technology & Integration Requirements
+5.1 Custom Web/Mobile Application Development
+NA-X requires custom front-ends (Web, iOS, Android) for both AU and US markets.
+* Australia (Shift Markets Backend): Integrate with Shift V4 GraphQL API.27 Implement user flows, trading (spot), wallet ops, reporting, security features, adhering to Trend's compliance requirements.80 Follow secure design best practices.100
+* US (Coinme Backend): Integrate with Coinme CaaS API/SDK. Implement user flows, KYC (via Coinme), buy/sell (cash/debit), wallet ops, reporting.
+* Unified vs. Separate Apps: Decision needed. Given platform differences (Shift vs. Coinme) and regulatory structures (CAR vs. CaaS), separate regional apps are likely simpler initially, ensuring tailored experiences and easier compliance management.
+5.2 Hubspot CRM Integration Strategy
+Centralize CRM using Hubspot, integrating data from both Shift (AU) and Coinme (US).
+* Goal: Unified customer view (preferred) or segregated regional data within Hubspot.
+* Technical Approach: Use Hubspot REST APIs for bi-directional sync.11
+   * Push customer data (contact info, KYC status, transaction summaries, support triggers) from Shift/Coinme APIs to Hubspot.
+* Data Mapping: Define mapping between platform API fields and Hubspot objects/properties (standard & custom). Use custom properties for region/platform tagging.103
+* Workflow Automation: Utilize Hubspot workflows for onboarding, marketing, support based on synced data.
+* Implementation: Use Hubspot REST API 11 or client libraries.11 Consider iPaaS if needed.
+* Challenges: Data consistency, duplicates, API rate limits, data privacy compliance (ensure regional data handling meets requirements), dependency on Shift/Coinme API robustness.11
+5.3 API Integration Approach
+Detailed plan needed for connecting custom apps and Hubspot to backends and third parties.
+* Shift Markets (AU): Prioritize V4 GraphQL.28 Secure authentication.27 Identify endpoints for user management, market data 27, trading 27, wallet ops (needs confirmation 27), reporting for NA-X and Trend oversight. Use WebSocket for real-time data.27
+* Coinme (US): Use Coinme CaaS API/SDK. Identify calls for onboarding/KYC 69, buy/sell (cash/debit, confirm ACH/Wire), transaction status, crypto send/receive, balances.
+* Liquidity Providers (AU): Leverage Shift aggregation or configure direct connections via Shift for Trend-opened accounts (Coinbase, Kraken 50, Binance, KuCoin, Nexus, B2C2, Crypto.com 51, NEO-X 52).22
+* Payment Providers (AU): Plan API integrations for Trend-opened accounts (Stripe 41, BCB 39, Alex Bank 40, Banxa 45).26
+* Hubspot CRM: Use Hubspot REST API.11 Use OAuth or private app tokens.13 Utilize Contact, Deal, Ticket APIs.103
+* General: Robust error handling, rate limit management 57, secure key management, monitoring.
+Table V.A: Core System Integration Points & API Requirements (Summary - Updated Context)
+(Same table structure as previous version, but context adjusted for CAR model in AU, e.g., reporting data flows potentially needing to reach Trend)
+VI. Consolidated Operational & Strategic Approach
+6.1 Synergies vs. Separation
+* Technology: Separate backends (Shift vs. Coinme). Hubspot CRM is the main synergy point.11 Separate regional apps likely simpler than a complex unified app.
+* Operations: Treasury must be separate (Fireblocks AU vs. Coinme US). Compliance requires distinct regional focus and processes due to different regulations and NA-X's CAR status in AU vs. leveraging Coinme in US.80 On-ramps are inherently different. Customer Support could potentially be centralized via Hubspot but requires cross-training.
+* Compliance: Functions must be largely independent. Trend Capital Group holds primary AFSL/AUSTRAC responsibility in AU, requiring robust oversight of NA-X.80 Coinme handles primary MSB/MTL/AML compliance in the US.69 High-level principles can be shared.
+* Customer Management (Hubspot): Offers synergy potential via unified view, but requires careful setup for regional tagging, data segregation, and compliance.
+Conclusion: Significant operational separation, especially for compliance and treasury, is necessary due to platform and regulatory differences (including AU CAR structure).
+6.2 Overall Platform Architecture Vision
+(Diagram Description - Conceptual - Updated Context)
+* User Interface Layer: Custom NA-X Web/iOS/Android Apps (likely separate regional apps initially).
+* Australian Stack (CAR Model):
+   * NA-X Apps <-> Shift Markets API <-> Shift Backend.
+   * Shift Integrates with: LPs (Trend accounts), Payment Gateways (Trend accounts), Fireblocks (Custody), Hubspot CRM.
+   * Shift Back-Office used by NA-X Ops (AU) AND must provide necessary data/access for Trend Capital Group Oversight.
+   * Compliance integrations (Sumsub, KYT tools) via Shift Hub, operating under Trend's framework.
+* US Stack (CaaS Model):
+   * NA-X Apps <-> Coinme CaaS API/SDK <-> Coinme Backend.
+   * Coinme Integrates internally with: Cash Network, Custody, Compliance Engine.
+   * Coinme Integrates via API/SDK with Hubspot CRM.
+   * Minimal direct back-office for NA-X; reliance on Coinme platform/reporting.
+* Central CRM:
+   * Hubspot CRM receives data from Shift API & Coinme API/SDK. Used by NA-X Marketing/Support/Ops. Must support regional data segregation/tagging for compliance.
+This architecture emphasizes the distinct compliance and operational models. Trend Capital Group's oversight role in the Australian stack is a key addition.
+VII. Conclusion & Recommendations
+7.1 Summary of Key Findings
+* NA-X Current State: Operates as OTC broker; CAR of Trend Capital Group in Australia; transitioning to Hubspot.
+* Australia (Shift Markets / CAR Model): Shift offers a capable platform.18 NA-X operates under Trend's AFSL, requiring Trend's oversight and authorisation for all services/tokens.80 Trend holds primary AUSTRAC/ASIC responsibility.80 Requires custom front-ends, integration with Trend-established LPs/Payment Gateways, and Fireblocks custody.
+* US (Coinme / CaaS Model): Coinme provides API for core buy/sell/custody, leveraging cash/debit network.69 Coinme handles primary US compliance (MSB/MTL).69 Potential gap in ACH/Wire support needs verification. Concentrated counterparty risk.
+* Technology & Integration: Requires custom apps (likely regional). Hubspot integration key for unified view.11 Complex dual-backend integration.
+* Strategy: Operational separation (compliance, treasury) necessary. CAR structure in AU adds layer of licensee oversight and dependency.
+7.2 Strategic Recommendations
+1. Proceed with Dual Launch, Acknowledging Structural Differences: Advance both initiatives but design operations, compliance, and governance around the distinct AU (CAR under Trend) and US (CaaS via Coinme) models.
+2. Prioritize API & Authorisation Verification:
+   * Coinme: Urgently confirm ACH/Wire support via CaaS API. Obtain full API/SDK documentation.
+   * Shift Markets: Obtain V4 GraphQL API docs. Verify endpoints support NA-X operations and Trend's oversight needs.
+   * Trend Capital Group: Critically, confirm Trend's existing AFSL authorisations cover the planned scope (services, tokens). Initiate AFSL variation process with Trend immediately if gaps exist. 81
+3. Formalise NA-X / Trend Operational Agreement: Clearly document roles, responsibilities, reporting lines, supervision processes, compliance procedures, and data sharing protocols between NA-X (CAR) and Trend Capital Group (Licensee) for the Australian exchange operation.
+4. Confirm AU Payment Gateway Integrations: Finalize selection and confirm technical integration feasibility for Trend-established accounts (Stripe, BCB, Alex Bank, Banxa), ensuring NPP/PayID support.26
+5. Define Hubspot Architecture: Decide on single vs. multiple instances, plan data mapping carefully with regional/platform tags, ensure compliance with data privacy/residency.
+6. Develop Tailored Regional Applications: Recommend separate regional apps initially due to distinct backend platforms and regulatory/operational models.
+7. Perform Coinme Due Diligence: Conduct thorough due diligence on Coinme's security, custody, operational stability, and compliance track record.
+7.3 Next Steps
+1. Technical Deep Dives: Schedule workshops with Shift Markets and Coinme.
+2. Legal & Compliance Consultation (Australia): Engage legal counsel with Trend Capital Group to confirm AFSL scope, plan necessary variations, and formalize the CAR operational agreement.
+3. Provider Selection & Contracting (AU): Finalize agreements with AU payment gateways (via Trend) and confirm integration paths. Confirm Fireblocks integration.
+4. Hubspot Implementation Plan: Develop detailed plan for configuration and integration.
+5. Resource Allocation: Allocate resources for custom apps (AU & US), Hubspot integration, specific platform integrations.
+6. Refine Treasury Procedures: Detail funding, reconciliation, security protocols for Fireblocks (AU) and Coinme (US), aligning AU procedures with Trend's requirements.
+7. Engage AUSTRAC (via Trend Capital Group): Trend Capital Group should lead engagement with AUSTRAC regarding the expanded scope, supported by NA-X.
+Works cited
+1. Coinbase Derivatives Exchange, accessed on April 23, 2025, https://www.coinbase.com/derivatives
+2. Nexo: Your Wealth Platform for Digital Assets, accessed on April 23, 2025, https://nexo.com/
+3. OTC Crypto & OTC Bitcoin Trading Desk Broker - Independent Reserve, accessed on April 23, 2025, https://www.independentreserve.com/features/otc
+4. Best Crypto Brokers in Australia | Swyftx, accessed on April 23, 2025, https://cryptonews.com.au/guides/best-crypto-brokers-in-australia/
+5. Ndax | An All-In-One Crypto Trading Platform for Canadians, accessed on April 23, 2025, https://ndax.io/en
+6. Best Crypto Brokers and Trading Platforms in Australia - BestBrokers.com, accessed on April 23, 2025, https://www.bestbrokers.com/crypto-brokers/best-crypto-brokers-australia/
+7. Crypto.com Exchange: OTC Portal, accessed on April 23, 2025, https://crypto.com/exchange/otc
+8. Trade Bitcoin & Buy Crypto with CoinDCX Crypto App, accessed on April 23, 2025, https://coindcx.com/
+9. Crypto.com Exchange: Trade crypto with low fees, accessed on April 23, 2025, https://crypto.com/exchange
+10. Ox Securities: Home, accessed on April 23, 2025, https://oxsecurities.com/
+11. HubSpot APIs | Getting started, accessed on April 24, 2025, https://developers.hubspot.com/docs/reference/api/overview
+12. Getting started overview - HubSpot Developers, accessed on April 23, 2025, https://developers.hubspot.com/docs/getting-started/overview
+13. How to use HubSpot's APIs, accessed on April 24, 2025, https://developers.hubspot.com/docs/guides/api/overview
+14. API Reference Overview - HubSpot Developers, accessed on April 24, 2025, https://developers.hubspot.com/docs/reference/api
+15. APIs & Integrations - HubSpot Community, accessed on April 24, 2025, https://community.hubspot.com/t5/APIs-Integrations/bd-p/integrations/page/8
+16. APIs & Integrations - HubSpot Community, accessed on April 24, 2025, https://community.hubspot.com/t5/APIs-Integrations/bd-p/integrations/page/518
+17. Top 5 White Label Crypto Exchange Providers in 2025 - Shift Markets, accessed on April 23, 2025, https://www.shiftmarkets.com/blog/top-5-white-label-crypto-exchange-providers-to-watch-in-2025
+18. Shift Markets | White Label Crypto Exchange Software, accessed on April 23, 2025, https://www.shiftmarkets.com/
+19. What is a White Label Crypto Exchange? Guide by Shift Markets, accessed on April 23, 2025, https://www.shiftmarkets.com/blog/white-label-crypto-exchange-guide
+20. Crypto Exchange Software - Shift Markets, accessed on April 24, 2025, https://www.shiftmarkets.com/crypto-exchange-software
+21. Features to Look for in White Label Exchange Platforms - Shift Markets, accessed on April 23, 2025, https://www.shiftmarkets.com/blog/features-white-label-exchange-platforms
+22. The Case for Launching a White Label Crypto Exchange in 2025 - Shift Markets, accessed on April 23, 2025, https://www.shiftmarkets.com/blog/case-for-launching-crypto-exchange-in-2025
+23. Shift Markets Launches New White Label Crypto Derivatives Platform - Finance Magnates, accessed on April 23, 2025, https://www.financemagnates.com/thought-leadership/shift-markets-launches-new-white-label-crypto-derivatives-platform/
+24. Crypto Exchanges - Shift Markets, accessed on April 23, 2025, https://www.shiftmarkets.com/exchange-operators
+25. White Label Crypto Exchange | Shift Markets, accessed on April 23, 2025, https://www.shiftmarkets.com/white-label-crypto-exchange
+26. The Shift Platform - Shift Markets, accessed on April 23, 2025, https://www.shiftmarkets.com/shift-platform
+27. Exchange API V1, accessed on April 23, 2025, https://api-docs-v1.shiftmarkets.com/
+28. Exchange API V4, accessed on April 23, 2025, https://api-docs.shiftmarkets.com/
+29. Crypto Exchange Back Office - Shift Markets, accessed on April 24, 2025, https://www.shiftmarkets.com/back-office
+30. Shift Markets Announces Partnership with Cobo, Reinforcing Security & Scalability for Crypto Exchanges - Fintech Finance, accessed on April 23, 2025, https://ffnews.com/newsarticle/shift-markets-announces-partnership-with-cobo-reinforcing-security-scalability-for-crypto-exchanges-2/
+31. How Shift Markets & Sumsub are Combating Identity Fraud in The ..., accessed on April 23, 2025, https://www.shiftmarkets.com/blog/shift-markets-and-sumsub-combating-identity-fraud
+32. FAQ - Shift Markets, accessed on April 23, 2025, https://www.shiftmarkets.com/faq
+33. Cryptocurrency Regulation Australia 2024 - Jake McKinley, accessed on April 23, 2025, https://jakelaw.com.au/cryptocurrency-regulation-australia-2024/
+34. Does Your Crypto Business Need an Australian Financial Services (AFS) Licence?, accessed on April 23, 2025, https://afslhouse.com.au/insights/does-your-crypto-business-need-an-australian-financial-services-afs-licence/
+35. Crypto-assets | ASIC, accessed on April 23, 2025, https://asic.gov.au/regulatory-resources/digital-transformation/crypto-assets/
+36. Shift Markets Response to ASIC's Consultation Paper 381 on Updates to INFO 225: Digital Assets: Financial products and services, accessed on April 24, 2025, https://www.shiftmarkets.com/blog/shift-markets-response-to-asics
+37. 28 February 2025 Digital Assets Team Australian Securities and Investments Commission GPO Box 9827 Melbourne VIC 3001 By email: - Financial Services Council, accessed on April 24, 2025, https://fsc.org.au/resources/2808-fsc-submission-cp381-and-proposed-updates-to-info-sheet-225
+38. NPP/Australia's Payment Future - Australian Payments Plus, accessed on April 23, 2025, https://www.auspayplus.com.au/brands/npp
+39. Launch of AUD payment rails brings higher speed and lower costs - BCB Group, accessed on April 23, 2025, https://www.bcbgroup.com/insights/launch-of-aud-payment-rails-will-bring-higher-speed-and-lower-costs/
+40. NPPA/Resources-faqs - Australian Payments Plus, accessed on April 24, 2025, https://www.auspayplus.com.au/brands/nppa-resources-faqs
+41. RBA Payment Regulation Review, accessed on April 24, 2025, https://www.rba.gov.au/payments-and-infrastructure/review-of-retail-payments-regulation/2024/submissions/pdf/stripe-inc.pdf
+42. BCB Group, accessed on April 24, 2025, https://www.bcbgroup.com/
+43. Learn about PayTo API - ANZ Developer Portal, accessed on April 24, 2025, https://developer.online.anz.com/product/PayTo%20API/learn
+44. APIs - AP+ Developers - Australian Payments Plus, accessed on April 24, 2025, https://www.developers.auspayplus.com.au/apis/
+45. Transak Expands to Australia - Gets Approved as a Digital Currency Exchange, accessed on April 23, 2025, https://transak.com/blog/transak-expands-to-australia
+46. The best crypto onramps for Australia, accessed on April 23, 2025, https://onramper.com/country-coverage/the-best-crypto-onramps-for-australia
+47. Banxa: Seamless Crypto & Fiat Conversions, accessed on April 24, 2025, https://banxa.com/
+48. Best Crypto Exchanges in Australia April 2025 - Koinly, accessed on April 23, 2025, https://koinly.io/blog/best-crypto-exchange-australia/
+49. Crypto Payment Gateway - Shift Markets, accessed on April 24, 2025, https://www.shiftmarkets.com/cryptopay
+50. Crypto API Trading & Solutions - Kraken, accessed on April 24, 2025, https://www.kraken.com/institutions/api
+51. Exchange API - Crypto.com, accessed on April 23, 2025, https://crypto.com/exchange/api
+52. Products - Neo-X, accessed on April 24, 2025, https://www.neox.au/products
+53. Nonco Brings Institutional FX Liquidity On-Chain, Powered by Avalanche, accessed on April 24, 2025, https://www.avax.network/blog/nonco-brings-institutional-fx-liquidity-on-chain-powered-by-avalanche
+54. Neo-X, accessed on April 24, 2025, https://www.neox.au/
+55. API Documentation - NeoX, accessed on April 24, 2025, https://docs.neox.vn/docs
+56. IgorJakovljevic/crypto-exchange: Offical Crypto.com Exchange API Document - GitHub, accessed on April 23, 2025, https://github.com/IgorJakovljevic/crypto-exchange
+57. Introduction – Exchange API v1, accessed on April 23, 2025, https://exchange-docs.crypto.com/exchange/v1/rest-ws/index.html
+58. API Documentation | Finnhub - Free APIs for realtime stock, forex, and cryptocurrency. Company fundamentals, economic data, and alternative data., accessed on April 23, 2025, https://finnhub.io/docs/api
+59. Cold Wallet vs. Hot Wallet: What's the Difference? | BitGo, accessed on April 23, 2025, https://www.bitgo.com/resources/blog/cold-wallet-vs-hot-wallet/
+60. Understanding Crypto Exchanges: A Beginner's Guide - OSL, accessed on April 23, 2025, https://osl.com/academy/article/understanding-crypto-exchanges-a-beginners-guide
+61. Crypto Treasury Management: How to Secure & Optimize Your Assets - io.finnet, accessed on April 23, 2025, https://www.iofinnet.com/post/crypto-treasury-management
+62. Key Considerations for Protecting Crypto Assets | Forvis Mazars, accessed on April 23, 2025, https://www.forvismazars.us/forsights/2025/03/key-considerations-for-protecting-crypto-assets
+63. A Guide To Successful Cryptocurrency App Development - Moon Technolabs, accessed on April 23, 2025, https://www.moontechnolabs.com/blog/cryptocurrency-app-development/
+64. Crypto Payment Reconciliation: Step-by-Step Guide - Krayon Digital, accessed on April 23, 2025, https://www.krayondigital.com/blog/crypto-payment-reconciliation-step-by-step-guide
+65. Crypto reconciliation controls: Ensure accurate general ledger entries, accessed on April 23, 2025, https://blog.cryptio.co/crypto-reconciliation-controls-ensure-accurate-general-ledger-entries
+66. Crypto Reconciliation: Streamline Your Financial Processes - Optimus Fintech, accessed on April 23, 2025, https://optimus.tech/knowledge-base/crypto-reconciliation
+67. A Quick Crypto Treasury Guide for Managers, accessed on April 23, 2025, https://blog.cryptoworth.com/crypto-treasury-management-guide/
+68. blog.cryptoworth.com, accessed on April 23, 2025, https://blog.cryptoworth.com/crypto-treasury-management-guide/#:~:text=Implement%20strong%20security%20measures%2C%20including,keep%20your%20treasury%20running%20smoothly.
+69. Crypto-as-a-Service - Power your platform with crypto! - Coinme, accessed on April 24, 2025, https://coinme.com/enterprise/
+70. What are fiat “on-ramps” and “off-ramps”? - Coinbase, accessed on April 24, 2025, https://www.coinbase.com/learn/crypto-basics/what-are-fiat-on-ramps-and-off-ramps
+71. USD ACH Deposits - Coinbase Help, accessed on April 24, 2025, https://help.coinbase.com/en/exchange/funding/depositing-with-ach
+72. Coinme Custodial Crypto Wallet App – Store & Manage Crypto, accessed on April 24, 2025, https://coinme.com/crypto-wallet/
+73. Coinme | Buy & Sell Crypto With Ease - Sign Up For Free Today, accessed on April 24, 2025, https://coinme.com/
+74. Buy & Sell Crypto with Cash Instantly | Coinme, accessed on April 24, 2025, https://coinme.com/buy-and-sell-crypto-with-cash/
+75. Buy Bitcoin At A Coinstar Bitcoin ATM Near You - Coinme, accessed on April 24, 2025, https://coinme.com/coinstar/
+76. SEC Charges CEO and Subsidiary of Seattle-Based Company with Securities Fraud, accessed on April 24, 2025, https://www.sec.gov/enforcement-litigation/administrative-proceedings/33-11179-s
+77. Coinme: Buy Bitcoin & Dogecoin 4+ - App Store, accessed on April 24, 2025, https://apps.apple.com/us/app/coinme-buy-bitcoin-dogecoin/id1545440300
+78. Licensing - Coinme Help Center, accessed on April 24, 2025, https://help.coinme.com/en/articles/9039706-licensing
+79. Financial advisers and authorised representatives - ASIC, accessed on April 24, 2025, https://asic.gov.au/online-services/asic-portals/financial-advisers-and-authorised-representatives/
+80. Understanding Authorised Representatives for AFS Licensees - AFSL House, accessed on April 24, 2025, https://afslhouse.com.au/insights/what-is-an-authorised-representative-of-an-afs-licensee/
+81. AFS licensee obligations - ASIC, accessed on April 24, 2025, https://asic.gov.au/for-finance-professionals/afs-licensees/afs-licensee-obligations/
+82. What's a Corporate Authorised Representative (CAR) & what are their obligations?, accessed on April 24, 2025, https://www.avenircapital.com.au/post/what-s-a-corporate-authorised-representative-car-what-are-their-obligations
+83. AFS licensee obligations - ASIC, accessed on April 24, 2025, https://asic.gov.au/regulatory-resources/financial-services/financial-advice/running-a-financial-advice-business/afs-licensee-obligations/
+84. Meeting your obligations: The importance of AR/CAR supervision and monitoring, accessed on April 24, 2025, https://mintegrity.com.au/meeting-your-obligations-the-importance-of-ar-car-supervision-and-monitoring/
+85. The general obligations of an AFS Licensee in General Insurance, accessed on April 24, 2025, https://complianceadvocacysolutions.com.au/the-general-obligations-of-an-afs-licensee-in-general-insurance/
+86. Regulatory Guide RG 104 AFS licensing: Meeting the general obligations - ASIC, accessed on April 24, 2025, https://download.asic.gov.au/media/zboexfrp/rg104-published-23-june-2022.pdf
+87. Licensing: Organisational competence, accessed on April 24, 2025, https://www.aph.gov.au/DocumentStore.ashx?id=76bd2b04-ade0-42fd-9797-84ddd26c56a9
+88. FACT SHEET: Key AFSL Requirements - What you need to know - Holley Nethercote, accessed on April 24, 2025, https://www.hnlaw.com.au/fact-sheet-key-afsl-requirements/
+89. Your obligations - AUSTRAC, accessed on April 24, 2025, https://www.austrac.gov.au/business/new-to-austrac/your-obligations
+90. Overview of the AML/CTF Amendment Act - Attorney-General's Department, accessed on April 24, 2025, https://www.ag.gov.au/crime/anti-money-laundering-and-counter-terrorism-financing/anti-money-laundering-and-counter-terrorism-financing-amendment-act/overview-amlctf-amendment-act
+91. Suspicious matter reports (SMRs) - AUSTRAC, accessed on April 24, 2025, https://www.austrac.gov.au/business/core-guidance/reporting/suspicious-matter-reports-smrs
+92. AUSTRAC compliance reports, accessed on April 24, 2025, https://www.austrac.gov.au/business/core-guidance/reporting/austrac-compliance-reports
+93. ASIC Record Keeping Obligations on AFSLs - Sophie Grace - Compliance and Legal, accessed on April 24, 2025, https://sophiegrace.com.au/asic-record-keeping-obligations-on-afsls/
+94. ASIC sends a message to 'Licensees-for-hire' - Technical update - MinterEllison, accessed on April 24, 2025, https://www.minterellison.com/articles/asic-sends-a-message-to-licensees-for-hire
+95. Australia: ASIC Continues Increased Scrutiny Into AFS Licensees for Hire, accessed on April 24, 2025, https://www.investmentlawwatch.com/2025/01/30/asic-continues-increased-scrutiny-into-afs-licensees-for-hire/
+96. Federal Court and ASIC shine spotlight on supervisory and risk management - Allens, accessed on April 24, 2025, https://www.allens.com.au/insights-news/insights/2024/04/federal-court-and-asic-shine-spotlight-on-supervisory-and-risk-management-requirements-for-car-arrangements/
+97. How to buy and sell bitcoin & crypto with Coinme, accessed on April 24, 2025, https://coinme.com/how-to/
+98. Coinme Help Center, accessed on April 24, 2025, https://help.coinme.com/en/
+99. Coinme blockchain Integration for Fintechs, banks and credit unions, accessed on April 24, 2025, https://azuremarketplace.microsoft.com/en-uk/marketplace/apps/coinme1580772559552.customer_onboarding?tab=Overview
+100. 6 Key steps for startups to build a crypto exchange platform - Synodus, accessed on April 23, 2025, https://synodus.com/blog/blockchain/how-to-create-a-crypto-exchange/
+101. Crypto Website Design for Success: Key Elements, Best Practices, and Industry Insights, accessed on April 23, 2025, https://community.nasscom.in/communities/mobile-web-development/crypto-website-design-success-key-elements-best-practices-and
+102. Create A P2P Crypto Exchange | Build Easily In These 5 Steps - Shamla Tech, accessed on April 23, 2025, https://shamlatech.com/how-to-create-a-p2p-crypto-exchange/
+103. CRM API | Properties - HubSpot Developers, accessed on April 24, 2025, https://developers.hubspot.com/docs/guides/api/crm/properties
+104. Understanding the CRM APIs - HubSpot Developers, accessed on April 24, 2025, https://developers.hubspot.com/docs/guides/api/crm/understanding-the-crm
+105. Crypto Trading Platform for Intermediaries and Partners - Kraken, accessed on April 24, 2025, https://www.kraken.com/institutions/banks
+106. Can real-time payments thrive in Australia's fast payment landscape? - Nuvei, accessed on April 24, 2025, https://www.nuvei.com/posts/can-real-time-payments-play-in-australia----or-are-payments-already-fast-enough?818a72c6_page=8&818a72f8_page=4
+107. API - Shift Transfer, accessed on April 24, 2025, https://shifttransfer.com/api/
+1. 1.

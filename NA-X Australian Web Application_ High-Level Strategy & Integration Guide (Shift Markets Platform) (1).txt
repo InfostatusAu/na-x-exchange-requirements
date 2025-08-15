@@ -1,0 +1,204 @@
+﻿NA-X Australian Web Application: High-Level Strategy & Integration Guide (Shift Markets Platform)
+Document Version: 1.0
+Date: May 25, 2025
+Target Audience: NA-X Development Team, Technical Leads, Product Owners, Compliance Liaisons
+1. Introduction & Purpose
+1.1. Objective
+This document outlines the high-level strategy and technical integration approach for developing the NA-X custom web application for the Australian market. This application will serve as the primary user interface for Australian clients to interact with the NA-X cryptocurrency exchange services.
+1.2. Core Technology & Regulatory Context
+The NA-X Australian exchange will be powered by the Shift Markets white-label platform as its core backend infrastructure.1 All exchange functionalities, including trading, user management, and wallet operations, will be managed through this central system.
+NA-X operates in Australia as a Corporate Authorised Representative (CAR) under the Australian Financial Services Licence (AFSL) held by Trend Capital Group Pty Ltd (Trend). This regulatory structure mandates that all financial services offered via the web application are within Trend's AFSL authorisations and subject to Trend's oversight and compliance framework.10
+1.3. Document Scope
+This strategy focuses on the web application's architecture, key functional modules, integration points with the Shift Markets API and other third-party services, and critical compliance considerations relevant to the Australian CAR model.
+2. Core Architectural Principles
+The NA-X Australian web application will be built upon the following architectural principles:
+* Shift Markets as Backend Authority: The Shift Markets platform is the definitive source of truth for all exchange-related data (user accounts, balances, orders, market data) and business logic execution.1
+* Custom NA-X Branded Front-End: The web application will be a custom-developed, NA-X branded interface, providing a unique and tailored user experience.
+* API-First Integration: All interactions between the web application and the Shift Markets backend will occur exclusively via the Shift Markets V4 GraphQL API.1 Direct database access or undocumented methods are prohibited.
+* Modular & Scalable Design: The web application's architecture will be modular to facilitate easier maintenance, testing, and future feature enhancements.
+* Security by Design: Security best practices will be embedded throughout the development lifecycle, from design to deployment and ongoing operations.
+* Compliance-Aware Development: Compliance requirements, particularly those stemming from the CAR model and Trend Capital Group's oversight, will be integrated into the design and functionality of relevant modules.
+3. Key Functional Modules & Requirements (Australian Web Application)
+The web application must deliver the following core functional modules for Australian users:
+3.1. User Onboarding & Management
+* REQ-UAM-001: Secure user registration process, collecting necessary personal information as defined by Trend Capital Group's AML/CTF program. 37
+* REQ-UAM-002: Integration with Shift Markets' KYC workflow (utilizing Sumsub) for identity verification. The front-end will guide users through data and document submission. 2
+* REQ-UAM-003: User login with robust password policies and Two-Factor Authentication (2FA) setup and usage. 38
+* REQ-UAM-004: User profile management (view/edit personal details, manage security settings, view KYC status).
+* Compliance Checkpoint (Onboarding): Before full account activation and trading enablement, the system must ensure KYC/AML verification is successfully completed and recorded in Shift, meeting Trend Capital Group's standards.
+3.2. Account Dashboard
+* REQ-DASH-001: Display a consolidated overview of the user's portfolio, including total estimated value in AUD.
+* REQ-DASH-002: List individual crypto and fiat (AUD) asset balances.
+* REQ-DASH-003: Provide access to detailed transaction history (deposits, withdrawals, trades).
+* REQ-DASH-004: Display currently open orders.
+3.3. Fiat (AUD) On/Off-Ramp Module
+* REQ-FIAT-001: Integration with approved Australian fiat payment providers: Stripe, BCB Group, Banxa (Note: Alex Bank requires further API validation and is lower priority). Accounts with these providers are established via Trend Capital Group. 41
+* REQ-FIAT-002: Prioritize and clearly present NPP/PayID as the primary method for real-time AUD deposits and withdrawals. 56
+* REQ-FIAT-003: Securely guide users through the deposit initiation process for selected providers, minimizing direct handling of sensitive banking details by the NA-X front-end where possible (e.g., using provider-hosted pages or secure elements).
+* REQ-FIAT-004: Allow users to initiate AUD withdrawal requests to their verified Australian bank accounts.
+* REQ-FIAT-005: Display the status of pending fiat transactions (deposits and withdrawals).
+* Compliance Checkpoint (Fiat Transactions): All AUD transactions must be recorded with sufficient detail in the Shift platform to support Trend Capital Group's AML/CTF transaction monitoring and reporting obligations.
+3.4. Cryptocurrency Wallet Operations Module
+* REQ-CRYPTO-001: Display current balances for all supported cryptocurrencies held by the user.
+* REQ-CRYPTO-002: Generate unique deposit addresses for each supported cryptocurrency per user. This will be facilitated via the Shift Markets API, which in turn interacts with Fireblocks. 2
+* REQ-CRYPTO-003: Allow users to initiate crypto withdrawal requests to external wallet addresses, including address validation and 2FA confirmation. This process is managed via Shift/Fireblocks.
+* REQ-CRYPTO-004: Display the status of pending crypto deposits (confirmations) and withdrawals.
+* Compliance Checkpoint (Crypto Withdrawals): Withdrawal requests must be subject to appropriate velocity checks and security protocols defined within the Shift/Fireblocks systems, aligning with Trend's risk management policies.
+3.5. Spot Trading Interface
+* REQ-TRADE-001: Display real-time market data: price charts, order books (depth), and recent trade history for selected trading pairs. Data to be sourced via Shift API (potentially Websocket for live updates). 37
+* REQ-TRADE-002: Enable placement of spot orders: Market, Limit, Stop-Loss. 4
+* REQ-TRADE-003: Provide functionality to view open orders, cancel pending orders, and access a comprehensive trade history.
+* Compliance Checkpoint (Trading): All trading activity must be logged comprehensively within the Shift platform. The system should provide data feeds or reports suitable for market surveillance and oversight by Trend Capital Group.
+3.6. Swaps Functionality (Optional - Post-MVP)
+* REQ-SWAP-001: If implemented, provide a simplified user interface for instant conversion between different cryptocurrencies at a quoted price, executed via the Shift backend.
+3.7. User Settings & Profile Management
+* REQ-SET-001: Allow users to view and update their profile information (non-KYC critical data).
+* REQ-SET-002: Manage security settings: password changes, 2FA device management. 38
+* REQ-SET-003: If NA-X offers user-level API keys for automated trading, provide an interface to generate, manage permissions for, and revoke these keys.
+3.8. Support & Help Module
+* REQ-SUP-001: Provide access to a searchable knowledge base / FAQ section.
+* REQ-SUP-002: Allow users to submit support requests/tickets, which will integrate with Hubspot CRM.
+4. Integration Strategy with Shift Markets API (V4 GraphQL)
+The web application will be a client to the Shift Markets V4 GraphQL API. All data display and actions will be performed through this API.
+* REQ-API-001: Authentication: Implement secure user authentication against the Shift Markets API using user-specific access tokens. API calls from the web application backend (if any intermediary server is used) or directly from the client (if secure) must use appropriate authentication headers (e.g., Bearer token). 37
+* REQ-API-002: GraphQL Operations:
+   * Utilize GraphQL queries for fetching data (user profiles, balances, market data, order status, transaction history).
+   * Utilize GraphQL mutations for performing actions (user registration, placing orders, initiating withdrawals, updating settings).
+   * Adhere to Shift Markets' V4 API schema and best practices. 71
+* REQ-API-003: Real-Time Data: For features requiring real-time updates (e.g., order books, live price tickers), investigate and implement Shift Markets' recommended Websocket API (likely using STOMP protocol as per V1 docs, confirm for V4). 37
+* REQ-API-004: Error Handling: Implement comprehensive error handling for API responses, providing user-friendly messages and logging detailed errors for troubleshooting.
+* REQ-API-005: Rate Limiting: Design the application to respect any API rate limits imposed by Shift Markets, implementing client-side or server-side throttling if necessary.
+* REQ-API-006: Security: All API communication must be over HTTPS. Sensitive data in requests/responses should be handled securely.
+* Compliance Checkpoint (API Integration): Ensure all API interactions are logged with sufficient detail (request, response, timestamp, user context) to create an audit trail. This audit trail must be accessible or reportable to Trend Capital Group for oversight purposes.
+5. Integration Strategy with Third-Party Services (Australian Operations)
+Integrations with other services will primarily be managed via the Shift Markets platform or will interact with systems established under Trend Capital Group.
+5.1. KYC/AML Provider (Sumsub)
+* REQ-INT-SUMSUB-001: The web application's onboarding module will present the UI for KYC data collection, which then interfaces with the Shift Markets API to trigger Sumsub's verification processes. 2
+* REQ-INT-SUMSUB-002: NA-X is responsible for the commercial relationship with Sumsub and providing API keys to Shift Markets for the integration.
+* REQ-INT-SUMSUB-003: KYC rules and workflow configurations will be managed within the Shift Back Office, to the extent permitted by Shift's integration.
+* Compliance Checkpoint: The Sumsub workflow, as configured via Shift, must be validated against Trend Capital Group's AML/CTF program requirements.
+5.2. Custody Solution (Fireblocks)
+* REQ-INT-FIREBLOCKS-001: All crypto deposits and withdrawals initiated from the web application will be processed through the Shift Markets platform, which is integrated with Fireblocks. 2
+* REQ-INT-FIREBLOCKS-002: The web application will query the Shift API for deposit addresses (generated by Fireblocks via Shift) and to initiate withdrawals (executed by Fireblocks via Shift).
+* REQ-INT-FIREBLOCKS-003: NA-X is responsible for its Fireblocks workspace setup and defining transaction policies within Fireblocks. The Shift integration should respect these policies.
+* Compliance Checkpoint: Ensure that transaction approval workflows and security policies configured in Fireblocks (and exposed/enforced via the Shift integration) align with Trend Capital Group's risk management framework and operational security standards.
+5.3. Australian Fiat On/Off Ramps (Stripe, BCB Group, Banxa)
+* REQ-INT-FIAT-AU-001: Determine for each provider (Stripe, BCB Group, Banxa) whether integration is natively supported and configurable via the Shift Back Office, or if direct API integration by NA-X (with subsequent balance updates to Shift) is required. 75
+* REQ-INT-FIAT-AU-002 (If Direct Integration):
+   * Develop secure API clients for each selected provider.
+   * Implement payment initiation flows (deposits and withdrawals).
+   * Implement webhook listeners for real-time transaction status updates from providers.
+   * Develop logic to securely call the Shift Markets API to update user AUD balances upon confirmed fiat transactions.
+   * Implement robust reconciliation mechanisms between provider statements and Shift platform ledger.
+* REQ-INT-FIAT-AU-003 (If Shift Native Integration):
+   * Configure payment routes and provider credentials within the Shift Back Office.
+   * Ensure the Shift API provides necessary endpoints to initiate payments via these configured routes and receive status updates.
+* Compliance Checkpoint: All fiat transaction data, regardless of integration method, must be accurately recorded in the Shift platform to enable Trend Capital Group's AML/CTF monitoring. Ensure transaction limits and velocity checks can be implemented.
+5.4. Liquidity Providers
+* REQ-INT-LP-001: Liquidity for Australian trading pairs will be sourced from the specified LPs (Coinbase, Kraken, Binance, KuCoin, Nexus, B2C2, Crypto.com, NEO-X), primarily configured and aggregated through the Shift Markets platform. 2
+* REQ-INT-LP-002: NA-X (potentially via Trend) is responsible for commercial relationships and funding of accounts with these LPs.
+* REQ-INT-LP-003: Configuration of LP connections, routing, and spreads will be managed via the Shift Back Office.
+* Compliance Checkpoint: Trading activity logs from Shift must be sufficient for market surveillance and oversight by Trend Capital Group.
+5.5. CRM (Hubspot)
+* REQ-INT-HUBSPOT-001: Develop custom middleware to synchronize customer data from the Shift Markets API to the Hubspot REST API. 75
+* REQ-INT-HUBSPOT-002: Data to sync includes: contact information, account details, KYC status, and potentially key activity summaries.
+* REQ-INT-HUBSPOT-003: Implement data mapping, transformation logic, error handling, and appropriate synchronization frequency.
+* Compliance Checkpoint: Ensure data handling and storage within Hubspot comply with Australian Privacy Principles and any data governance policies set by Trend Capital Group. Secure API key management is essential.
+6. Compliance Integration Points & Checks (Australian Web Application)
+The web application must be designed with compliance at its core, facilitating NA-X's obligations as a CAR and Trend Capital Group's oversight responsibilities.
+6.1. User Onboarding & KYC/AML
+* Workflow: The web app guides users through data input for KYC.
+* System Interaction: Data is passed to Shift API, which triggers Sumsub verification. KYC status is retrieved from Shift API.
+* Compliance Checkpoint (Design): UI for data collection must be clear and capture all fields required by Trend's AML/CTF program.
+* Compliance Checkpoint (Process): Before account activation, ensure a "verified" status is received from Shift/Sumsub and logged. Implement procedures for handling failed or pending verifications according to Trend's policies.
+6.2. Transaction Monitoring Data
+* Workflow: Users perform fiat and crypto transactions via the web app.
+* System Interaction: All transactions are processed and logged by the Shift Markets platform.
+* Compliance Checkpoint (Design): Ensure all necessary transaction details (timestamps, amounts, counterparties where applicable, user IDs) are captured by Shift.
+* Compliance Checkpoint (Process): NA-X compliance team (under Trend's guidance) must have access to transaction data via Shift Back Office or API for monitoring. Implement processes for escalating suspicious activity to Trend.
+6.3. Regulatory Reporting Support
+* Workflow: Data for AUSTRAC reports (SMRs, etc.) and ASIC compliance is generated from platform activity.
+* System Interaction: Shift platform must be the source of this data.
+* Compliance Checkpoint (Design): Verify that Shift's data export capabilities or API can provide data in a format suitable for Trend to meet its AUSTRAC and ASIC reporting obligations.
+* Compliance Checkpoint (Process): Establish clear procedures for NA-X to extract and provide necessary data to Trend for timely regulatory submissions.
+6.4. Record Keeping
+* Workflow: All user interactions, transactions, and compliance actions are recorded.
+* System Interaction: Shift platform is the primary system of record. Fireblocks and Hubspot also store relevant data.
+* Compliance Checkpoint (Design): Ensure systems are configured for data retention for at least 7 years.
+* Compliance Checkpoint (Process): Implement procedures for secure data backup and retrieval for audit purposes by Trend or ASIC.
+6.5. Trend Capital Group Oversight Enablement
+* Workflow: Trend requires ongoing visibility into NA-X's operations.
+* System Interaction: This may involve providing Trend personnel with specific (e.g., read-only, audit-focused) access to the Shift Back Office, or generating regular, detailed operational and compliance reports from the Shift platform for Trend's review.
+* Compliance Checkpoint (Design): During Shift Back Office configuration (WP0.1, S0.1.10), identify and configure roles/permissions or reporting functionalities that can satisfy Trend's supervision needs.
+* Compliance Checkpoint (Process): Formalize the reporting and access protocols in the NA-X/Trend operational agreement (WP0.2, S0.2.3). Conduct periodic reviews with Trend to ensure oversight mechanisms are effective.
+7. Development & Technology Stack Considerations
+* Front-End Framework: Select a modern, robust JavaScript framework (e.g., React, Angular, Vue.js) to ensure a responsive, maintainable, and scalable web application.
+* API Client: Utilize a mature GraphQL client library (e.g., Apollo Client, Relay) for efficient interaction with the Shift Markets V4 API.
+* State Management: Implement a predictable and scalable client-side state management solution (e.g., Redux, Zustand, Vuex).
+* Security Practices:
+   * Adhere to OWASP Top 10 security principles.
+   * Implement secure local storage for any client-side sensitive data (minimize where possible).
+   * Ensure all communication is over HTTPS.
+   * Implement Content Security Policy (CSP) and other relevant browser security headers.
+   * Regularly update dependencies to patch known vulnerabilities.
+* Testing Strategy:
+   * Unit Tests: For individual components and functions.
+   * Integration Tests: For interactions between front-end modules and API services.
+   * End-to-End (E2E) Tests: For critical user flows (e.g., registration, deposit, trade, withdrawal).
+   * Security Testing: Including penetration testing and vulnerability assessments before launch and periodically thereafter.
+* Deployment: Establish a CI/CD (Continuous Integration/Continuous Deployment) pipeline for automated testing and deployment to staging and production environments.
+* Hosting: The web application itself will be hosted separately from the Shift Markets backend (which Shift hosts on AWS [User Query]). Choose a suitable hosting provider (e.g., AWS, Vercel, Netlify) for the front-end application.
+8. High-Level Phased Implementation Approach (Australian Web App)
+This aligns with the main project roadmap, focusing on AU web app deliverables and compliance checks.
+8.1. Phase 0: Foundation & Due Diligence
+* Key Activities:
+   * Critical: Full validation of Shift Markets V4 GraphQL API capabilities against all functional requirements for the web app (WP0.1, S0.1.1). 38
+   * Confirm technical integration paths for all AU Fiat Ramp providers (Stripe, BCB Group, Banxa) with Shift Markets (WP0.1, S0.1.4).
+   * Formalize the NA-X/Trend operational, compliance, and supervision agreement (WP0.2, S0.2.3).
+* Compliance Checkpoint: Ensure the legal and regulatory framework for Australian operations, including Trend's AFSL scope and oversight mechanisms, is fully understood, documented, and agreed upon with Trend Capital Group.
+8.2. Phase 1: MVP Development & AU Launch Preparation
+* Key Activities:
+   * Develop the core Australian web application MVP functionalities (WP1.1): User Onboarding (with Shift/Sumsub KYC), Account Dashboard, AUD Deposits/Withdrawals (integrating 1-2 confirmed NPP/PayID providers via Shift), basic Spot Trading interface.
+   * Integrate Fireblocks (via Shift) for Australian user wallets (S1.2.1).
+   * Develop initial Hubspot integration for Australian user data (S1.2.4).
+* Compliance Checkpoints:
+   * Thoroughly test the end-to-end KYC/AML workflow against Trend's defined standards.
+   * Verify that transaction data capture within Shift is adequate for Trend's monitoring needs.
+   * Conduct UAT with Trend stakeholders focusing on compliance and oversight features.
+8.3. Phase 2: Enhancements & Australian Public Launch
+* Key Activities:
+   * Refine the Australian web application based on MVP and Beta feedback (S1.4.6, S2.5.4).
+   * Integrate any remaining prioritized AU fiat ramp providers.
+   * Expand token listings (subject to the full validation process including Trend's AFSL authorisation check).
+   * Implement crypto swaps functionality if prioritized.
+   * Prepare for and execute the Australian public launch (WP2.5).
+* Compliance Checkpoints:
+   * Complete full end-to-end compliance process testing across all integrated systems before public launch.
+   * Ensure all agreed-upon oversight tools, reports, and access mechanisms for Trend Capital Group are operational and effective.
+   * Final compliance review and sign-off from Trend Capital Group.
+8.4. Phase 3: Ongoing Enhancement & Operations
+* Key Activities:
+   * Continuous development of new features and improvements for the web application based on user feedback and business priorities (WP3.2).
+   * Ongoing monitoring of platform performance, security, and compliance (WP3.3, WP3.4).
+* Compliance Checkpoints:
+   * Regular compliance audits and reviews conducted by/with Trend Capital Group.
+   * Continuous monitoring of regulatory changes and adaptation of processes as needed.
+   * Ongoing training for NA-X staff on compliance obligations.
+9. Key Risks & Mitigation (Australian Web App Development Focus)
+* Risk: Shift V4 GraphQL API Instability or Functional Gaps.
+   * Mitigation: Aggressive and early validation during Phase 0 (WP0.1). Maintain open communication with Shift technical support.
+   * Contingency: Develop workarounds if minor gaps. Re-evaluate Shift Markets if major, unresolvable issues are found.
+* Risk: Complexity in Integrating AU Fiat Ramps with Shift Markets.
+   * Mitigation: Early technical validation of Shift's native integration capabilities versus the need for direct NA-X development (WP0.1). Prioritize providers with well-documented APIs and proven NPP/PayID support.
+   * Contingency: Allocate buffer in development timeline and budget for potential direct integration work.
+* Risk: Failure to Meet Trend Capital Group's Technical Oversight Requirements.
+   * Mitigation: Early and continuous engagement with Trend throughout the design and development process to define and implement necessary oversight features (reporting, data access) within the web app and Shift Back Office (WP0.2, ongoing). Formalize requirements in the operational agreement.
+   * Contingency: Custom development of specific reporting tools if Shift's native capabilities are insufficient.
+* Risk: Data Inconsistencies between Web App, Shift, Fiat Ramps, Fireblocks, and Hubspot.
+   * Mitigation: Design robust API interaction logic, implement comprehensive error handling, and develop automated reconciliation processes where possible.
+   * Contingency: Implement manual reconciliation procedures as a fallback, though this increases operational overhead.
+* Risk: Security Vulnerabilities in the Custom Web Application.
+   * Mitigation: Adhere to secure software development lifecycle (SSDLC) practices, conduct regular code reviews, and perform thorough security testing, including third-party penetration testing before launch (S1.4.4).
+   * Contingency: Have an incident response plan in place.
+This strategy provides a focused approach for the development of the NA-X Australian web application, emphasizing integration with the Shift Markets platform and adherence to the compliance framework dictated by the CAR model under Trend Capital Group. Continuous validation and close collaboration with all vendors and Trend Capital Group will be paramount to success.
+________________
