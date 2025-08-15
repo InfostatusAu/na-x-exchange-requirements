@@ -1,7 +1,7 @@
 # NA-X Cryptocurrency Exchange Business Requirements Document
 
-**Version:** 1.0  
-**Date:** August 13, 2025  
+**Version:** 1.1  
+**Date:** August 15, 2025  
 **Document Owner:** NA-X Development Team  
 
 ## Executive Summary
@@ -103,78 +103,92 @@ NA-X seeks to expand its current personalized OTC cryptocurrency brokerage opera
 **BR-038:** Financial services guide and disclosure requirements  
 **BR-039:** Dispute resolution and complaints handling  
 
-### 4.4 Platform Requirements
-**BR-040:** Seamless integration capabilities with third-party services  
-**BR-041:** Real-time data synchronization across business operations  
-**BR-042:** Scalable platform supporting business growth projections  
-**BR-043:** Enterprise-grade security and compliance standards  
-**BR-044:** Business continuity and disaster recovery capabilities
+### 4.4 Security and Business Continuity Requirements
+**BR-040:** Enterprise-grade security and compliance standards  
+**BR-041:** Business continuity and disaster recovery capabilities
 
-## 5. Stakeholder Requirements
+## 5. Platform and Technical Requirements
+
+**BR-042:** Seamless integration capabilities with third-party services  
+**BR-043:** Real-time data synchronization across business operations  
+**BR-044:** Scalable platform supporting business growth projections  
+
+## 6. Stakeholder Requirements
 
 ### 5.1 End Users (Customers)
 **BR-045:** Users require intuitive and responsive trading interfaces  
 **BR-046:** Users require fast and reliable trade execution  
 **BR-047:** Users require transparent fee structures and real-time portfolio information  
 
-### 5.2 NA-X Operations Team  
+### 6.2 NA-X Operations Team  
 **BR-048:** Business requires comprehensive back-office management capabilities  
 **BR-049:** Business requires integrated customer support workflow with HubSpot CRM  
 
-### 5.3 Trend Capital Group (Licensee)
+### 6.3 Trend Capital Group (Licensee)
 **BR-050:** Licensee requires complete oversight and supervision capabilities  
 **BR-051:** Licensee requires automated regulatory reporting systems  
 
-### 5.4 Regulatory Bodies
+### 6.4 Regulatory Bodies
 **BR-052:** Regulators require complete transaction transparency and audit capabilities
 
-## 6. Constraints and Assumptions
+## 7. Constraints and Assumptions
 
-### 6.1 Regulatory Constraints
-- All Australian operations must remain within Trend Capital Group's AFSL scope
-- US operations limited to Coinme's licensed capabilities
-- Data residency requirements for Australian customer information
-- Compliance with all applicable financial services regulations
+### 7.1 Regulatory Constraints
+**CST-001:** All Australian operations must remain within Trend Capital Group's AFSL scope  
+**CST-002:** US operations limited to Coinme's licensed capabilities  
+**CST-003:** Data residency requirements for Australian customer information  
+**CST-004:** Compliance with all applicable financial services regulations  
 
-### 6.2 Business Constraints
-- Budget allocation for development, integration, and compliance costs
-- Timeline constraints for market entry and competitive positioning
-- Resource availability for development, testing, and operations
-- Risk tolerance for new market entry and technology adoption
+### 7.2 Business Constraints
+**CST-005:** Budget allocation for development, integration, and compliance costs  
+**CST-006:** Timeline constraints for market entry and competitive positioning  
+**CST-007:** Resource availability for development, testing, and operations  
+**CST-008:** Risk tolerance for new market entry and technology adoption  
 
-### 6.3 Key Business Assumptions
-- Trend Capital Group's AFSL covers all planned service offerings
-- Existing OTC customers will migrate to exchange platform
-- Market conditions will support exchange launch timing
-- Regulatory environment will remain stable during implementation period
+### 7.3 Technology Constraints
+**CST-009:** Development must align with chosen platform capabilities and release schedules  
+**CST-010:** Integration limited to Trend-approved payment providers and liquidity partners  
+**CST-011:** Performance requirements must support expected user load and trading volumes  
 
-## 7. Success Metrics and KPIs
+### 7.4 Key Business Assumptions
+**ASM-001:** Trend Capital Group's AFSL covers all planned service offerings  
+**ASM-002:** Existing OTC customers will migrate to exchange platform  
+**ASM-003:** Market conditions will support exchange launch timing  
+**ASM-004:** Regulatory environment will remain stable during implementation period  
 
-### 7.1 Launch Metrics
-- Time to market for Australian exchange launch
-- Successful completion of all regulatory approvals
-- Customer migration rate from OTC to exchange platform
-- System uptime and performance metrics during launch
+### 7.5 Technology Assumptions
+**ASM-005:** Platform providers will provide complete documentation and support throughout development  
+**ASM-006:** Custody solutions will meet regulatory security requirements  
+**ASM-007:** Third-party integrations will be technically feasible and stable  
+**ASM-008:** API rate limits and availability will support business requirements
 
-### 7.2 Operational Metrics
-- Daily active users and trading volume
-- Customer acquisition and retention rates
-- Transaction processing efficiency
-- Customer support response times and satisfaction scores
+## 8. Success Metrics and KPIs
 
-### 7.3 Financial Metrics
-- Revenue growth from expanded service offerings
-- Cost efficiency improvements from automation
-- Customer lifetime value improvements
-- Return on investment for platform investment
+### 8.1 Launch Metrics
+**MET-001:** Time to market for Australian exchange launch (Target: 6 months)  
+**MET-002:** Successful completion of all regulatory approvals (Target: 100%)  
+**MET-003:** Customer migration rate from OTC to exchange platform (Target: 80% within 12 months)  
+**MET-004:** System uptime and performance metrics during launch (Target: 99.9% uptime)  
 
-### 7.4 Compliance Metrics
-- Regulatory reporting accuracy and timeliness
-- AML/CTF compliance audit results
-- Security incident frequency and severity
-- Customer data protection compliance rates
+### 8.2 Operational Metrics
+**MET-005:** Daily active users and trading volume (Target: 1,000 DAU by month 6)  
+**MET-006:** Customer acquisition and retention rates (Target: 90% retention rate)  
+**MET-007:** Transaction processing efficiency (Target: <100ms API response times)  
+**MET-008:** Customer support response times and satisfaction scores (Target: <2 hour response, 90% satisfaction)  
 
-## 8. Approval and Sign-off
+### 8.3 Financial Metrics
+**MET-009:** Revenue growth from expanded service offerings (Target: 300% increase year 1)  
+**MET-010:** Cost efficiency improvements from automation (Target: 40% operational cost reduction)  
+**MET-011:** Customer lifetime value improvements (Target: 150% increase)  
+**MET-012:** Return on investment for platform investment (Target: ROI >200% by year 2)  
+
+### 8.4 Compliance Metrics
+**MET-013:** Regulatory reporting accuracy and timeliness (Target: 100% accuracy, within required timeframes)  
+**MET-014:** AML/CTF compliance audit results (Target: Zero critical findings)  
+**MET-015:** Security incident frequency and severity (Target: Zero critical security incidents)  
+**MET-016:** Customer data protection compliance rates (Target: 100% compliance with Privacy Act and GDPR)
+
+## 9. Approval and Sign-off
 
 This Business Requirements Document requires approval from:
 - NA-X Executive Leadership

@@ -45,7 +45,7 @@ Each functional requirement includes:
 - Integration with Sumsub via Shift Markets API
 - Progress tracking for KYC completion status
 
-**FR-AUTH-003** [P0] [BR-029,BR-043] System shall enforce Two-Factor Authentication (2FA)  
+**FR-AUTH-003** [P0] [BR-029,BR-040] System shall enforce Two-Factor Authentication (2FA)  
 *Acceptance Criteria:*
 - TOTP support via authenticator apps
 - SMS backup option where available
@@ -351,7 +351,7 @@ Each functional requirement includes:
 - SQL injection and XSS protection
 - Regular security vulnerability assessments
 
-**FR-SEC-002** [P0] [BR-043,BR-032,BR-033,BR-034,BR-035] System shall protect sensitive data  
+**FR-SEC-002** [P0] [BR-040,BR-032,BR-033,BR-034,BR-035] System shall protect sensitive data  
 *Acceptance Criteria:*
 - Encryption at rest for all sensitive data
 - Encryption in transit for all communications

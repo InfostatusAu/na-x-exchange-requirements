@@ -47,7 +47,7 @@ Each functional requirement includes a **[BR-XXX]** reference linking it to the 
 - Integration with Coinme KYC process (US)
 - Progress tracking for KYC completion status
 
-**FR-AUTH-003** [P0] [BR-029,BR-043] System shall enforce Two-Factor Authentication (2FA)  
+**FR-AUTH-003** [P0] [BR-029,BR-040] System shall enforce Two-Factor Authentication (2FA)  
 *Business Justification:* Supports compliance and risk management requirements, implements security best practices  
 *Acceptance Criteria:*
 - TOTP (Time-based One-Time Password) support via authenticator apps
@@ -549,7 +549,7 @@ Each functional requirement includes a **[BR-XXX]** reference linking it to the 
 - SQL injection and XSS protection
 - Regular security vulnerability assessments
 
-**FR-SEC-002** [P0] [BR-043,BR-032,BR-033,BR-034,BR-035] System shall protect sensitive data  
+**FR-SEC-002** [P0] [BR-040,BR-032,BR-033,BR-034,BR-035] System shall protect sensitive data  
 *Business Justification:* Implements security best practices and data protection compliance requirements
 *Acceptance Criteria:*
 - Encryption at rest for all sensitive data
