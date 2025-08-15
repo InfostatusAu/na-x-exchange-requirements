@@ -1,6 +1,6 @@
 # NA-X Requirements Traceability Matrix
 
-**Version:** 3.0  
+**Version:** 2.2  
 **Date:** August 15, 2025  
 **Document Owner:** NA-X Business Analysis Team  
 
@@ -15,39 +15,37 @@ This Requirements Traceability Matrix (RTM) ensures complete bidirectional trace
 
 *This matrix reflects the consolidated BRD structure with no overlapping requirements.*
 
-## 2. Enhanced Traceability Matrix
-
-*This matrix provides complete lifecycle traceability linking Business Requirements to Functional Requirements, Constraints, Assumptions, Success Metrics, and Risk Items.*
+## 2. Traceability Matrix
 
 ### 2.1 Customer Onboarding and Management
 
-| BR ID | Business Requirement | Functional Requirements | Constraints | Assumptions | Success Metrics | Risk Items | Priority | Status |
-|-------|----------------------|------------------------|-------------|-------------|-----------------|------------|----------|---------|
-| **BR-001** | Unified customer registration process across both markets | FR-AUTH-001, FR-AUTH-002, FR-PROFILE-001 | CST-001, CST-002 | ASM-001, ASM-002 | MET-002, MET-005 | RSK-001, RSK-002 | P0 | Not Started |
-| **BR-002** | KYC/AML verification meeting respective jurisdictional requirements | FR-AUTH-002, FR-PROFILE-002, FR-COMP-001 | CST-001, CST-004 | ASM-001, ASM-004 | MET-002, MET-013, MET-014 | RSK-001, RSK-002, RSK-003 | P0 | Not Started |
-| **BR-003** | HubSpot CRM integration for centralized customer management | FR-INT-004, FR-PROFILE-001 | CST-009, CST-010 | ASM-005, ASM-007 | MET-006, MET-008 | RSK-005, RSK-019 | P0 | Not Started |
-| **BR-004** | Migration path for existing OTC customers to exchange platform | FR-PROFILE-001, FR-DASH-002 | CST-006, CST-007 | ASM-002 | MET-003, MET-006 | RSK-008 | P0 | Not Started |
-| **BR-005** | Customer support integration with existing service standards | FR-PROFILE-006 | CST-007, CST-010 | ASM-005 | MET-008 | RSK-019 | P1 | Not Started |
+| Business Requirement | Functional Requirements | Test Case IDs | Priority | Status |
+|----------------------|------------------------|---------------|----------|---------|
+| **BR-001:** Unified customer registration process across both markets | FR-AUTH-001: Secure user registration<br>FR-AUTH-002: KYC information collection<br>FR-PROFILE-001: Profile management | TC-AUTH-001<br>TC-AUTH-002<br>TC-PROFILE-001 | P0 | Not Started |
+| **BR-002:** KYC/AML verification meeting respective jurisdictional requirements | FR-AUTH-002: KYC information collection<br>FR-PROFILE-002: KYC verification status<br>FR-COMP-001: Transaction monitoring | TC-AUTH-002<br>TC-PROFILE-002<br>TC-COMP-001 | P0 | Not Started |
+| **BR-003:** HubSpot CRM integration for centralized customer management | FR-INT-004: HubSpot CRM integration<br>FR-PROFILE-001: Profile management | TC-INT-004<br>TC-PROFILE-001 | P0 | Not Started |
+| **BR-004:** Migration path for existing OTC customers to exchange platform | FR-PROFILE-001: Profile management<br>FR-DASH-002: Account activity display | TC-PROFILE-001<br>TC-DASH-002 | P0 | Not Started |
+| **BR-005:** Customer support integration with existing service standards | FR-PROFILE-006: Customer support and dispute resolution | TC-PROFILE-006 | P1 | Not Started |
 
 ### 2.2 Trading and Exchange Services
 
-| BR ID | Business Requirement | Functional Requirements | Constraints | Assumptions | Success Metrics | Risk Items | Priority | Status |
-|-------|----------------------|------------------------|-------------|-------------|-----------------|------------|----------|---------|
-| **BR-006** | Spot trading for approved cryptocurrency pairs | FR-TRADE-004, FR-TRADE-005, FR-TRADE-007, FR-TRADE-008 | CST-001, CST-009 | ASM-001, ASM-005 | MET-005, MET-007 | RSK-001, RSK-004 | P0 | Not Started |
-| **BR-007** | Real-time market data and order book functionality | FR-TRADE-001, FR-INT-002 | CST-009, CST-011 | ASM-005, ASM-008 | MET-007 | RSK-004, RSK-007 | P0 | Not Started |
-| **BR-008** | Multiple order types (market, limit, stop-loss) | FR-TRADE-004, FR-TRADE-005, FR-TRADE-006 | CST-009 | ASM-005 | MET-007 | RSK-004 | P0 | Not Started |
-| **BR-009** | Crypto swap functionality for direct asset exchange | FR-SWAP-001, FR-SWAP-002 | CST-009, CST-010 | ASM-005, ASM-007 | MET-005 | RSK-004, RSK-018 | P1 | Not Started |
-| **BR-010** | Professional trading interface suitable for high-value clients | FR-TRADE-002, FR-TRADE-003, FR-DASH-001 | CST-011 | ASM-002, ASM-008 | MET-005, MET-006, MET-007 | RSK-006, RSK-008 | P0 | Not Started |
+| Business Requirement | Functional Requirements | Test Case IDs | Priority | Status |
+|----------------------|------------------------|---------------|----------|---------|
+| **BR-006:** Spot trading for approved cryptocurrency pairs | FR-TRADE-004: Market orders<br>FR-TRADE-005: Limit orders<br>FR-TRADE-007: Order management<br>FR-TRADE-008: Trade execution | TC-TRADE-004<br>TC-TRADE-005<br>TC-TRADE-007<br>TC-TRADE-008 | P0 | Not Started |
+| **BR-007:** Real-time market data and order book functionality | FR-TRADE-001: Real-time market data<br>FR-INT-002: WebSocket feeds | TC-TRADE-001<br>TC-INT-002 | P0 | Not Started |
+| **BR-008:** Multiple order types (market, limit, stop-loss) | FR-TRADE-004: Market orders<br>FR-TRADE-005: Limit orders<br>FR-TRADE-006: Stop-loss orders | TC-TRADE-004<br>TC-TRADE-005<br>TC-TRADE-006 | P0 | Not Started |
+| **BR-009:** Crypto swap functionality for direct asset exchange | FR-SWAP-001: Crypto-to-crypto swaps<br>FR-SWAP-002: Swap rate optimization | TC-SWAP-001<br>TC-SWAP-002 | P1 | Not Started |
+| **BR-010:** Professional trading interface suitable for high-value clients | FR-TRADE-002: Interactive charts<br>FR-TRADE-003: Market metrics<br>FR-DASH-001: Account overview | TC-TRADE-002<br>TC-TRADE-003<br>TC-DASH-001 | P0 | Not Started |
 
 ### 2.3 Fiat Operations (Australian Market)
 
-| BR ID | Business Requirement | Functional Requirements | Constraints | Assumptions | Success Metrics | Risk Items | Priority | Status |
-|-------|----------------------|------------------------|-------------|-------------|-----------------|------------|----------|---------|
-| **BR-011** | Real-time AUD transfer capabilities | FR-FIAT-001 | CST-001, CST-010 | ASM-001, ASM-005 | MET-007, MET-009 | RSK-001, RSK-016 | P0 | Not Started |
-| **BR-012** | Multiple fiat payment provider support | FR-FIAT-002 | CST-010 | ASM-005, ASM-007 | MET-009 | RSK-016 | P0 | Not Started |
-| **BR-013** | Bank account verification and withdrawal functionality | FR-FIAT-004, FR-FIAT-005 | CST-001, CST-004 | ASM-001, ASM-006 | MET-007, MET-013 | RSK-001, RSK-016 | P0 | Not Started |
-| **BR-014** | Transaction status tracking and reconciliation | FR-FIAT-003, FR-FIAT-006 | CST-011 | ASM-008 | MET-007 | RSK-006 | P1 | Not Started |
-| **BR-015** | Compliance with Australian banking and payment regulations | FR-COMP-001, FR-COMP-003 | CST-001, CST-004 | ASM-001, ASM-004 | MET-013, MET-014 | RSK-001, RSK-002, RSK-003 | P0 | Not Started |
+| Business Requirement | Functional Requirements | Test Case IDs | Priority | Status |
+|----------------------|------------------------|---------------|----------|---------|
+| **BR-011:** Real-time AUD transfer capabilities | FR-FIAT-001: AUD deposits via NPP/PayID | TC-FIAT-001 | P0 | Not Started |
+| **BR-012:** Multiple fiat payment provider support | FR-FIAT-002: Payment provider deposits | TC-FIAT-002 | P0 | Not Started |
+| **BR-013:** Bank account verification and withdrawal functionality | FR-FIAT-004: AUD withdrawals<br>FR-FIAT-005: Withdrawal processing | TC-FIAT-004<br>TC-FIAT-005 | P0 | Not Started |
+| **BR-014:** Transaction status tracking and reconciliation | FR-FIAT-003: Deposit status tracking<br>FR-FIAT-006: Withdrawal history | TC-FIAT-003<br>TC-FIAT-006 | P1 | Not Started |
+| **BR-015:** Compliance with Australian banking and payment regulations | FR-COMP-001: Transaction monitoring<br>FR-COMP-003: Regulatory reporting | TC-COMP-001<br>TC-COMP-003 | P0 | Not Started |
 
 ### 2.4 Cryptocurrency Operations
 
@@ -140,11 +138,24 @@ This Requirements Traceability Matrix (RTM) ensures complete bidirectional trace
 - **Covered by FRs:** 52 (100%)
 - **Uncovered BRs:** 0
 
-### 3.2 Priority Distribution
+### 3.2 Test Case Coverage
+- **Total Test Case IDs:** 52 (TC-XXX-XXX format)
+- **BRs with Test Cases:** 52 (100%)
+- **Test Case Distribution:**
+  - Authentication: 4 test cases
+  - Trading: 8 test cases  
+  - Fiat Operations: 5 test cases
+  - Cryptocurrency: 5 test cases
+  - Compliance: 15 test cases
+  - Platform/Technical: 7 test cases
+  - Security: 6 test cases
+  - Stakeholder: 8 test cases
+
+### 3.3 Priority Distribution
 - **P0 (Critical for MVP):** 39 BRs (75%)
 - **P1 (Important for full functionality):** 13 BRs (25%)
 
-### 3.3 Functional Areas Coverage
+### 3.4 Functional Areas Coverage
 - **Authentication & Authorization:** 7 BRs covered
 - **Trading & Exchange:** 5 BRs covered
 - **Fiat Operations:** 5 BRs covered
